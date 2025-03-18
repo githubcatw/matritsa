@@ -1,0 +1,13 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:matritsa.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:matritsa.Views"
+		xmlns:lang="clr-namespace:matritsa.Properties;assembly=matritsa"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+        x:Class="matritsa.Views.MainWindow"
+        Icon="/Assets/matritsa_l128.ico"
+        Title="{x:Static lang:Resources.appNameBeta}">
+        <views:MainView />
+</Window>

@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
+             x:Class="matritsa.MiniLayoutPreview">
+	<Grid
+	    ColumnDefinitions="*, *, 5*, *, 5*"
+	    RowDefinitions="*, *, 5*, *, 5*"
+		Background="Gray">
+		
+		<Border
+			Background="White"
+			Grid.Column="1" Grid.ColumnSpan="6"
+			Grid.Row="1" Grid.RowSpan="6">
+		</Border>
+
+		<!-- коды -->
+		<Border
+			Background="White"
+			BorderBrush="Black"
+			BorderThickness="2"
+			Grid.Column="2"
+			Grid.Row="2">
+		</Border>
+		<Border
+			Background="White"
+			BorderBrush="Black"
+			BorderThickness="2"
+			Grid.Column="4"
+			Grid.Row="2">
+		</Border>
+		<Border
+			Background="White"
+			BorderBrush="Black"
+			BorderThickness="2"
+			Grid.Column="2"
+			Grid.Row="4">
+		</Border>
+		<Border
+			Background="White"
+			BorderBrush="Black"
+			BorderThickness="2"
+			Grid.Column="4"
+			Grid.Row="4">
+		</Border>
+
+		<!-- подсветка кодов -->
+		<Border
+			Background="Pink"
+			Grid.Column="2"
+			Grid.Row="2"
+			Name="Code1High" IsVisible="False">
+		</Border>
+		<Border
+			Background="Pink"
+			Grid.Column="4"
+			Grid.Row="2"
+			Name="Code2High" IsVisible="False">
+		</Border>
+		<Border
+			Background="Pink"
+			Grid.Column="2"
+			Grid.Row="4"
+			Name="Code3High" IsVisible="False">
+		</Border>
+		<Border
+			Background="Pink"
+			Grid.Column="4"
+			Grid.Row="4"
+			Name="Code4High" IsVisible="False">
+		</Border>
+
+		<!-- вокруг всех кодов -->
+		<Border
+			Background="Pink"
+			Grid.Column="1"
+			Grid.Row="1" Grid.RowSpan="6"
+			Name="StartPadding" IsVisible="False">
+		</Border>
+		<Border
+			Background="Pink"
+			Grid.Row="1"
+			Grid.Column="1" Grid.ColumnSpan="6"
+			Name="TopPadding" IsVisible="False">
+		</Border>
+
+		<!-- между кодами -->
+		<Border
+			Background="Pink"
+			Grid.Row="1"
+			Grid.Column="3" Grid.RowSpan="6"
+			Name="BetweenVPadding" IsVisible="False">
+		</Border>
+		<Border
+			Background="Pink"
+			Grid.Row="3"
+			Grid.Column="1" Grid.ColumnSpan="6"
+			Name="BetweenHPadding" IsVisible="False">
+		</Border>
+
+		<!-- вся страница -->
+		<Border
+			Background="Pink"
+			Grid.Column="1" Grid.ColumnSpan="6"
+			Grid.Row="1" Grid.RowSpan="6"
+			Name="PageSize" IsVisible="False">
+		</Border>
+	</Grid>
+</UserControl>

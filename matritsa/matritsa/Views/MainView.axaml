@@ -1,0 +1,128 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:matritsa.ViewModels"
+			 xmlns:mtrc="clr-namespace:matritsa;assembly=matritsa"
+			 xmlns:util="clr-namespace:matritsa.Util;assembly=matritsa"
+			 xmlns:lang="clr-namespace:matritsa.Properties;assembly=matritsa"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             x:Class="matritsa.Views.MainView"
+             x:DataType="vm:MainViewModel">
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+	<UserControl.Resources>
+		<util:SafeFloatConverter x:Key="floatConverter"/>
+	</UserControl.Resources>
+	<Grid Margin="5"
+	        ColumnDefinitions="*, *, *, *"
+	        RowDefinitions="*, *, *, *, *, *, *, *, *">
+		<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" FontWeight="Bold"
+				   Margin="10" Text="{x:Static lang:Resources.codeList}"/>
+		<TextBlock
+			HorizontalAlignment="Stretch" VerticalAlignment="Center"
+			Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+			Margin="10" Text="{Binding CSVFile, Converter={x:Static util:Converters.FileStringConverter}}"/>
+		<Button
+			HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"
+			Name="PickCSV" Margin="10" Content="{x:Static lang:Resources.codeListBtn}">
+		</Button>
+
+		<mtrc:MiniLayoutPreview Margin="10" Grid.Row="3" Grid.RowSpan="5" Grid.ColumnSpan="2"
+								Name="Preview"></mtrc:MiniLayoutPreview>
+
+		<TextBlock
+			HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Bold"
+			Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="10"
+			Text="{x:Static lang:Resources.layoutParams}"/>
+		<TextBlock
+			HorizontalAlignment="Stretch" VerticalAlignment="Center"
+			Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Margin="10"
+			Text="{x:Static lang:Resources.layoutParamsPage}"/>
+
+		<CheckBox
+			HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 10 0"
+			Grid.Row="3" Grid.Column="3" Content="Same as frame"
+			IsChecked="{Binding IgnorePageSize, Mode=TwoWay}"
+			Name="IgnorePageSizeToggle"
+			ToolTip.Tip="If enabled, every page will have the same size as the code frame. This should be enabled for label printers."/>
+
+		<TextBox Grid.Row="4" Grid.Column="2" Margin="10" Name="Width"
+				 IsEnabled="{Binding !IgnorePageSize}"
+				 Text="{Binding PageWidth, Mode=TwoWay, Converter={StaticResource floatConverter}}"
+			     Watermark="{x:Static lang:Resources.pageWidth}" ToolTip.Tip="{x:Static lang:Resources.pageWidth}">
+			<TextBox.InnerRightContent>
+				<TextBlock Foreground="Gray" Text="{x:Static lang:Resources.unitMillimeterShort}" Margin="0 0 5 0" VerticalAlignment="Center"/>
+			</TextBox.InnerRightContent>
+		</TextBox>
+		<TextBox Grid.Row="4" Grid.Column="3" Margin="10" Name="Height"
+				 IsEnabled="{Binding !IgnorePageSize}"
+				 Text="{Binding PageHeight, Mode=TwoWay, Converter={StaticResource floatConverter}}"
+				 Watermark="{x:Static lang:Resources.pageHeight}" ToolTip.Tip="{x:Static lang:Resources.pageHeight}">
+			<TextBox.InnerRightContent>
+				<TextBlock Foreground="Gray" Text="{x:Static lang:Resources.unitMillimeterShort}" Margin="0 0 5 0" VerticalAlignment="Center"/>
+			</TextBox.InnerRightContent>
+		</TextBox>
+		<TextBlock
+			HorizontalAlignment="Stretch" VerticalAlignment="Center"
+			Grid.Row="5" Grid.Column="2" Margin="10"
+			Text="{x:Static lang:Resources.layoutParamsCode}"/>
+		<TextBlock
+			HorizontalAlignment="Right" VerticalAlignment="Center"
+			IsVisible="{Binding !IgnorePageSize}"
+			Grid.Row="5" Grid.Column="3" Foreground="Gray" Margin="0 0 10 0"
+			Text="{Binding CodesPerPage}"/>
+
+		<TextBox Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="2"
+				 Margin="10" Name="MatSize"
+				 Text="{Binding MatrixSize, Mode=TwoWay, Converter={StaticResource floatConverter}}"
+			     Watermark="{x:Static lang:Resources.matrixSize}" ToolTip.Tip="{x:Static lang:Resources.matrixSize}">
+			<TextBox.InnerRightContent>
+				<TextBlock Foreground="Gray" Text="{x:Static lang:Resources.unitMillimeterShort}" Margin="0 0 5 0" VerticalAlignment="Center"/>
+			</TextBox.InnerRightContent>
+		</TextBox>
+		<TextBox Grid.Row="7" Grid.Column="2" Margin="10" Name="MatFW"
+				 Text="{Binding MatrixFrameWidth, Mode=TwoWay, Converter={StaticResource floatConverter}}"
+			     Watermark="{x:Static lang:Resources.matrixFrameWidth}" ToolTip.Tip="{x:Static lang:Resources.matrixFrameWidth}">
+			<TextBox.InnerRightContent>
+				<TextBlock Foreground="Gray" Text="{x:Static lang:Resources.unitMillimeterShort}" Margin="0 0 5 0" VerticalAlignment="Center"/>
+			</TextBox.InnerRightContent>
+		</TextBox>
+		<TextBox Grid.Row="7" Grid.Column="3" Margin="10" Name="MatFH"
+				 Text="{Binding MatrixFrameHeight, Mode=TwoWay, Converter={StaticResource floatConverter}}"
+			     Watermark="{x:Static lang:Resources.matrixFrameHeight}" ToolTip.Tip="{x:Static lang:Resources.matrixFrameHeight}">
+			<TextBox.InnerRightContent>
+				<TextBlock Foreground="Gray" Text="{x:Static lang:Resources.unitMillimeterShort}" Margin="0 0 5 0" VerticalAlignment="Center"/>
+			</TextBox.InnerRightContent>
+		</TextBox>
+
+		<Button
+			HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="10"
+			IsEnabled="{Binding SaveBlockedReason, Converter={x:Static StringConverters.IsNullOrEmpty}}" Name="SaveFile"
+			Content="{x:Static lang:Resources.generateBtn}" ToolTip.Tip="{Binding SaveBlockedReason}" ToolTip.ShowOnDisabled="True"/>
+		<Button
+			HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Grid.Row="8" Grid.Column="2" Grid.ColumnSpan="2" Margin="10"
+			Content="{x:Static lang:Resources.optionsBtn}"/>
+		
+		<Border Grid.RowSpan="9" Grid.ColumnSpan="8" Name="LoadingCover" IsVisible="False">
+			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+				<Label Content="{x:Static lang:Resources.generateProcess}" Name="ProgressText"
+					   Foreground="White" FontSize="20" Margin="0 0 0 10"></Label>
+				<ProgressBar Minimum="0" Maximum="100" Value="0" Name="ProgressIndicator"></ProgressBar>
+				<Button Name="Cancel" Margin="0 10 0 0" HorizontalAlignment="Stretch"
+						HorizontalContentAlignment="Center"
+						Content="{x:Static lang:Resources.generateProcessCancel}"/>
+			</StackPanel>
+		</Border>
+	</Grid>
+</UserControl>
