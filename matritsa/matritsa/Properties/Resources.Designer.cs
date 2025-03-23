@@ -277,6 +277,24 @@ namespace matritsa.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Same as frame.
+        /// </summary>
+        public static string layoutParamsIgnore {
+            get {
+                return ResourceManager.GetString("layoutParamsIgnore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If enabled, every page will have the same size as the code frame. This should be enabled for label printers..
+        /// </summary>
+        public static string layoutParamsIgnoreDesc {
+            get {
+                return ResourceManager.GetString("layoutParamsIgnoreDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Page:.
         /// </summary>
         public static string layoutParamsPage {

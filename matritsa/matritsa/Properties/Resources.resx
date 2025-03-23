@@ -232,4 +232,10 @@
     <value>Generic</value>
     <comment>see Util.PluralSet</comment>
   </data>
+  <data name="layoutParamsIgnoreDesc" xml:space="preserve">
+    <value>If enabled, every page will have the same size as the code frame. This should be enabled for label printers.</value>
+  </data>
+  <data name="layoutParamsIgnore" xml:space="preserve">
+    <value>Same as frame</value>
+  </data>
 </root>

@@ -48,10 +48,10 @@
 
 		<CheckBox
 			HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 10 0"
-			Grid.Row="3" Grid.Column="3" Content="Same as frame"
+			Grid.Row="3" Grid.Column="3" Content="{x:Static lang:Resources.layoutParamsIgnore}"
 			IsChecked="{Binding IgnorePageSize, Mode=TwoWay}"
 			Name="IgnorePageSizeToggle"
-			ToolTip.Tip="If enabled, every page will have the same size as the code frame. This should be enabled for label printers."/>
+			ToolTip.Tip="{x:Static lang:Resources.layoutParamsIgnoreDesc}"/>
 
 		<TextBox Grid.Row="4" Grid.Column="2" Margin="10" Name="Width"
 				 IsEnabled="{Binding !IgnorePageSize}"

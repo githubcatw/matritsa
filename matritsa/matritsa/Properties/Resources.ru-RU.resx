@@ -228,4 +228,10 @@
   <data name="_util.pluralForm" xml:space="preserve">
     <value>Slavic</value>
   </data>
+  <data name="layoutParamsIgnoreDesc" xml:space="preserve">
+    <value>Если включить, у каждой страницы будет тот же размер, что у рамки кода. Надо включить для принтеров этикеток.</value>
+  </data>
+  <data name="layoutParamsIgnore" xml:space="preserve">
+    <value>Как у рамки</value>
+  </data>
 </root>
