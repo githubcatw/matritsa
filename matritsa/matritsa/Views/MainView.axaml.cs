@@ -72,7 +72,7 @@ public partial class MainView : UserControl {
             if (viewModel.CSVFile != null) {
                 genTaskCancel = new CancellationTokenSource();
                 // проверяем параметры
-                if (viewModel.PageWidth == null || viewModel.PageHeight == null ||
+                if ((!viewModel.IgnorePageSize && (viewModel.PageWidth == null || viewModel.PageHeight == null)) ||
                     viewModel.MatrixFrameWidth == null || viewModel.MatrixFrameHeight == null ||
                     viewModel.MatrixSize == null) {
                     return;
@@ -81,8 +81,8 @@ public partial class MainView : UserControl {
                 generator.Options = new PDFOptions(
                     new PaperType(
                         new Dimensions<float>(
-                            (float)viewModel.PageWidth,
-                            (float)viewModel.PageHeight,
+                            viewModel.PageWidth != null ? (float)viewModel.PageWidth : 0F,
+                            viewModel.PageHeight != null ? (float)viewModel.PageHeight : 0F,
                             MeasurementUnit.Millimeter
                         ),
                         10
@@ -96,7 +96,11 @@ public partial class MainView : UserControl {
                 );
                 // создаем токен и фоновую задачу
                 var token = genTaskCancel.Token;
-                var genTask = new Task(() => GeneratePDF(HttpUtility.UrlDecode(viewModel.CSVFile.Replace("file:///", "")), token), token);
+                var genTask = new Task(() => GeneratePDF(
+                    HttpUtility.UrlDecode(viewModel.CSVFile.Replace("file:///", "")),
+                    token,
+                    viewModel.IgnorePageSize
+                ), token);
                 // запускаем задачу
                 genTask.Start();
             }
@@ -108,7 +112,7 @@ public partial class MainView : UserControl {
         LoadingCover.IsVisible = false;
     }
 
-    private async void GeneratePDF(string url, CancellationToken token) {
+    private async void GeneratePDF(string url, CancellationToken token, bool ignorePageSize) {
         var myTopLevel = TopLevel.GetTopLevel(this);
         Uri? outPath = null;
         if (myTopLevel != null) {
@@ -143,7 +147,8 @@ public partial class MainView : UserControl {
                         ProgressIndicator.Value = progress * 100;
                     });
                 },
-                token
+                token,
+                ignorePageSize
             );
             if (outPath != null) {
                 pdf.Save(HttpUtility.UrlDecode(outPath.LocalPath));
