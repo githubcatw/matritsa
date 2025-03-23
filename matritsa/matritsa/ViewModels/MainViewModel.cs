@@ -29,24 +29,26 @@ public class MainViewModel : ViewModelBase
         get => _matFW;
         set {
             this.RaiseAndSetSaveAffectingIfChanged(ref _matFW, value);
-            /*if (_ignPgSz) {
+            if (_ignPgSz) {
                 this.RaisePropertyChanged(nameof(PageWidth));
-            }*/
+            }
         }
     }
     public float? MatrixFrameHeight {
         get => _matFH;
         set {
             this.RaiseAndSetSaveAffectingIfChanged(ref _matFH, value);
-            /*if (_ignPgSz) {
+            if (_ignPgSz) {
                 this.RaisePropertyChanged(nameof(PageHeight));
-            }*/
+            }
         }
     }
     public bool IgnorePageSize {
         get => _ignPgSz;
         set {
-            this.RaiseAndSetSaveAffectingIfChanged(ref _ignPgSz, value);
+            this.RaiseAndSetIfChanged(ref _ignPgSz, value);
+            this.RaisePropertyChanged(nameof(SaveBlockedReason));
+            this.RaisePropertyChanged(nameof(CodesPerPage));
             this.RaisePropertyChanged(nameof(PageWidth));
             this.RaisePropertyChanged(nameof(PageHeight));
         }
