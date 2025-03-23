@@ -99,6 +99,19 @@
 			Name="BetweenHPadding" IsVisible="False">
 		</Border>
 
+		<!-- код (ignorePageSize) -->
+		<Border
+			Name="IPSCode"
+			IsVisible="False"
+			Background="White"
+			BorderBrush="Black"
+			BorderThickness="2"
+			Grid.Column="2"
+			Grid.RowSpan="3"
+			Grid.ColumnSpan="3"
+			Grid.Row="2">
+		</Border> 
+
 		<!-- вся страница -->
 		<Border
 			Background="Pink"

@@ -1,9 +1,18 @@
+using Avalonia;
 using Avalonia.Controls;
 
 namespace matritsa;
 
-public partial class MiniLayoutPreview : UserControl
-{
+public partial class MiniLayoutPreview : UserControl {
+
+    public bool EnableIPS {
+        get => GetValue(EnableIPSProperty);
+        set => SetValue(EnableIPSProperty, value);
+    }
+
+    public static readonly StyledProperty<bool> EnableIPSProperty =
+            AvaloniaProperty.Register<MiniLayoutPreview, bool>(nameof(EnableIPS), defaultValue: false);
+
     public MiniLayoutPreview()
     {
         InitializeComponent();
