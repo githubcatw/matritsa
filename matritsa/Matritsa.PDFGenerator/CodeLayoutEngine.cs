@@ -12,16 +12,25 @@ using System.Text;
 #endif
 
 namespace Matritsa.PDFGenerator {
+    /// <summary>
+    /// Верстает PDF-файл с кодами.
+    /// </summary>
     public class CodeLayoutEngine {
         public PDFOptions Options;
 
         private readonly DmtxImageEncoder dmtxEncoder;
 
+        /// <summary>
+        /// Устанавливает параметры генерации.
+        /// </summary>
         public CodeLayoutEngine(PDFOptions options) {
             this.Options = options;
             this.dmtxEncoder = new DmtxImageEncoder();
         }
 
+        /// <summary>
+        /// Кисти для отладки. Используются с режимом debugRainbow в функциях PDFGenerator.
+        /// </summary>
         public static XBrush[] DebugBrushes = {
             XBrushes.Aqua, XBrushes.Black, XBrushes.Blue, XBrushes.BlueViolet, XBrushes.Orange, XBrushes.OrangeRed, XBrushes.Red, XBrushes.SaddleBrown
         };

@@ -8,7 +8,9 @@ using System.Text;
 #endif
 
 namespace Matritsa.PDFGenerator {
-
+    /// <summary>
+    /// Генерирует блоки для PDF-файлов.
+    /// </summary>
     public class PDFBlockGenerator {
         /// <summary>
         /// Превращает 2-битное изображение в блоки для добавления в PDF.

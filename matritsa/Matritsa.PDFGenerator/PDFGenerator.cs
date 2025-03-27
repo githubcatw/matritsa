@@ -26,11 +26,24 @@ namespace Matritsa.PDFGenerator {
             this.LayoutEngine = new CodeLayoutEngine(options);
         }
 
+        /// <summary>
+        /// Устанавливает параметры генерации.
+        /// </summary>
         public void SetOptions(PDFOptions options) {
             this.Options = options;
             this.LayoutEngine.Options = options;
         }
 
+        /// <summary>
+        /// Генерирует документ с кодами.
+        /// </summary>
+        /// <param name="codes">Коды.</param>
+        /// <param name="name">Название документа.</param>
+        /// <param name="codeGenerated">Событие, которое вызывается при верстании, а потом при размещении каждого кода. Параметры: количество сверстанных кодов и прогресс.</param>
+        /// <param name="token">Токен отмены (для работы на отдельном потоке).</param>
+        /// <param name="onePerPage">Включает специальный режим генерации документа с одним кодом на каждой странице.</param>
+        /// <param name="debugRainbow">Функция для отладки: каждый код будет иметь свой цвет.</param>
+        /// <returns>Готовый документ.</returns>
         public PdfDocument Generate(
             string[] codes,
             string name = "Коды продуктов",
@@ -72,6 +85,17 @@ namespace Matritsa.PDFGenerator {
             );
         }
 
+        /// <summary>
+        /// Генерирует документ с кодами, где на странице может быть только один код.
+        /// <br/>
+        /// Эта функция немного быстрее <see cref="GenerateMultiple(string[], string, Action{int, float}?, CancellationToken?, bool, bool)"/>.
+        /// </summary>
+        /// <param name="codes">Коды.</param>
+        /// <param name="name">Название документа.</param>
+        /// <param name="codeGenerated">Событие, которое вызывается при верстании, а потом при размещении каждого кода. Параметры: количество сверстанных кодов и прогресс.</param>
+        /// <param name="token">Токен отмены (для работы на отдельном потоке).</param>
+        /// <param name="debugRainbow">Функция для отладки: каждый код будет иметь свой цвет.</param>
+        /// <returns>Готовый документ.</returns>
         public PdfDocument GenerateOnePerPage(
             string[] codes,
             string name = "Коды продуктов",
@@ -129,7 +153,7 @@ namespace Matritsa.PDFGenerator {
         }
 
         /// <summary>
-        /// Генерирует документ с кодами.
+        /// Генерирует документ с кодами, где на странице может быть несколько кодов.
         /// </summary>
         /// <param name="codes">Коды.</param>
         /// <param name="name">Название документа.</param>
