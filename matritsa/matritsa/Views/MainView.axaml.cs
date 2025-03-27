@@ -27,9 +27,6 @@ public partial class MainView : UserControl {
         MimeTypes = ["text/csv"]
     };
 
-    private PDFGenerator generator = new(new PDFOptions(PaperType.A4, new Dimensions<float>(15, 15, MeasurementUnit.Millimeter), 10));
-    private CancellationTokenSource? genTaskCancel = null;
-
     public MainView() {
         InitializeComponent();
         
@@ -76,145 +73,41 @@ public partial class MainView : UserControl {
                 viewModel.MatrixSize == null) {
                 return;
             }
-            // сгенерируем название временного файла
-            //var filename = "matrigen_preview_" + new Random().Next().ToString() + ".pdf";
-            //var path = Path.Join(Path.GetTempPath(), filename);
-            // создаем источник токена
-            genTaskCancel = new CancellationTokenSource();
-            // записываем параметры
-            generator.SetOptions(new PDFOptions(
-                new PaperType(
-                    new Dimensions<float>(
-                        viewModel.PageWidth != null ? (float)viewModel.PageWidth : 0F,
-                        viewModel.PageHeight != null ? (float)viewModel.PageHeight : 0F,
-                        MeasurementUnit.Millimeter
-                    ),
-                    10
-                ),
-                new Dimensions<float>(
-                    (float)viewModel.MatrixFrameWidth,
-                    (float)viewModel.MatrixFrameHeight,
-                    MeasurementUnit.Millimeter
-                ),
-                (float)viewModel.MatrixSize
-            ));
-            // создаем токен и фоновую задачу
-            var token = genTaskCancel.Token;
-            var genTask = new Task(() => GeneratePreview(token), token);
-            // запускаем задачу
-            genTask.Start();
+            viewModel.StartPrintPreview();
         }
     }
 
-    private void GeneratePreview(CancellationToken token) {
-
-        var layout = generator.GeneratePrintPreviewData(
-            async (mat, progress) => {
-                await Dispatcher.UIThread.InvokeAsync(() => {
-                    ProgressIndicator.Value = progress * 100;
-                });
-            },
-            token
-        );
-        //pdf.Save(path);
-        //Utils.OpenUrl(path);
-    }
-
-    private void SaveFile_Click(object? sender, RoutedEventArgs e) {
+    private async void SaveFile_Click(object? sender, RoutedEventArgs e) {
         if (DataContext is MainViewModel viewModel) {
             if (viewModel.CSVFile != null) {
-                genTaskCancel = new CancellationTokenSource();
                 // проверяем параметры
                 if ((!viewModel.IgnorePageSize && (viewModel.PageWidth == null || viewModel.PageHeight == null)) ||
                     viewModel.MatrixFrameWidth == null || viewModel.MatrixFrameHeight == null ||
                     viewModel.MatrixSize == null) {
                     return;
                 }
-                // записываем параметры
-                generator.SetOptions(new PDFOptions(
-                    new PaperType(
-                        new Dimensions<float>(
-                            viewModel.PageWidth != null ? (float)viewModel.PageWidth : 0F,
-                            viewModel.PageHeight != null ? (float)viewModel.PageHeight : 0F,
-                            MeasurementUnit.Millimeter
-                        ),
-                        10
-                    ),
-                    new Dimensions<float>(
-                        (float)viewModel.MatrixFrameWidth,
-                        (float)viewModel.MatrixFrameHeight,
-                        MeasurementUnit.Millimeter
-                    ),
-                    (float)viewModel.MatrixSize
-                ));
-                // создаем токен и фоновую задачу
-                var token = genTaskCancel.Token;
-                var genTask = new Task(() => GeneratePDF(
-                    HttpUtility.UrlDecode(viewModel.CSVFile.Replace("file:///", "")),
-                    token,
-                    viewModel.IgnorePageSize
-                ), token);
-                // запускаем задачу
-                genTask.Start();
+                var myTopLevel = TopLevel.GetTopLevel(this);
+                Uri? outPath = null;
+                if (myTopLevel != null) {
+                    // запрашиваем файл
+                    var file = await myTopLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions() {
+                        Title = "Сохранить файл",
+                        FileTypeChoices = [FilePickerFileTypes.Pdf]
+                    });
+                    if (file == null) {
+                        return;
+                    }
+                    outPath = file.Path;
+                    viewModel.StartGeneration(outPath);
+                }
             }
         }
     }
 
     private void Cancel_Click(object? sender, RoutedEventArgs e) {
-        genTaskCancel?.Cancel();
-        LoadingCover.IsVisible = false;
-    }
-
-    private async void GeneratePDF(string url, CancellationToken token, bool ignorePageSize) {
-        var myTopLevel = TopLevel.GetTopLevel(this);
-        Uri? outPath = null;
-        if (myTopLevel != null) {
-            // запрашиваем файл
-            var file = await myTopLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions() {
-                Title = "Сохранить файл",
-                FileTypeChoices = [FilePickerFileTypes.Pdf]
-            });
-            // передаем его в viewmodel
-            if (file == null) {
-                return;
-            }
-            outPath = file.Path;
+        if (DataContext is MainViewModel viewModel) {
+            viewModel.CancelGeneration();
         }
-
-        using var stream = File.Open(url, FileMode.Open);
-        using StreamReader reader = new(stream);
-
-        string fileContents = reader.ReadToEnd();
-
-        stream.Close();
-
-        await Dispatcher.UIThread.InvokeAsync(() => {
-            LoadingCover.IsVisible = true;
-        });
-        try {
-            var pdf = generator.Generate(
-                fileContents.Split("\n", StringSplitOptions.RemoveEmptyEntries),
-                string.Format("Коды продуктов - {0}", System.IO.Path.GetFileNameWithoutExtension(url)),
-                async (mat, progress) => {
-                    await Dispatcher.UIThread.InvokeAsync(() => {
-                        ProgressIndicator.Value = progress * 100;
-                    });
-                },
-                token,
-                ignorePageSize
-            );
-            if (outPath != null) {
-                pdf.Save(HttpUtility.UrlDecode(outPath.LocalPath));
-                Utils.OpenUrl(HttpUtility.UrlDecode(outPath.OriginalString));
-            }
-            Debug.WriteLine("Generated");
-        } catch (OperationCanceledException) {
-            Debug.WriteLine("Operation was canceled!");
-        }
-
-        await Dispatcher.UIThread.InvokeAsync(() => {
-            LoadingCover.IsVisible = false;
-        });
     }
 
     private async void PickCSV_Click(object? sender, RoutedEventArgs e) {

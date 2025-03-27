@@ -1,9 +1,17 @@
 ﻿
 using matritsa.Properties;
 using matritsa.Util;
+using Matritsa.PDFGenerator.Data;
+using Matritsa.PDFGenerator;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
+using System.Reflection.Emit;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
+using System.IO;
+using Avalonia.Threading;
 
 namespace matritsa.ViewModels;
 
@@ -91,16 +99,139 @@ public class MainViewModel : ViewModelBase
         }
     }
 
+    public float? GenerationProgress {
+        get => _genPs;
+        set => this.RaiseAndSetIfChanged(ref _genPs, value);
+    }
+    public bool ShowGenerationProgress {
+        get => _showGen;
+        set => this.RaiseAndSetIfChanged(ref _showGen, value);
+    }
+
     private float? _pageW = 297;
     private float? _pageH = 210;
     private float? _matSz = 10;
     private float? _matFW = 15;
     private float? _matFH = 15;
+    private float? _genPs = 0;
+    private bool _showGen = false;
     private bool _ignPgSz = false;
 
     internal void SetCSVFile(string v) {
         CSVFile = v;
         this.RaisePropertyChanged(nameof(CSVFile));
         this.RaisePropertyChanged(nameof(SaveBlockedReason));
+    }
+
+    private PDFGenerator generator = new(new PDFOptions(PaperType.A4, new Dimensions<float>(15, 15, MeasurementUnit.Millimeter), 10));
+    private CancellationTokenSource? genTaskCancel = null;
+
+    internal void GeneratePreview(CancellationToken token) {
+        var layout = generator.GeneratePrintPreviewData(
+            (mat, progress) => {
+                GenerationProgress = progress * 100;
+            },
+            token
+        );
+        //pdf.Save(path);
+        //Utils.OpenUrl(path);
+    }
+
+    internal void StartPrintPreview() {
+        // сгенерируем название временного файла
+        //var filename = "matrigen_preview_" + new Random().Next().ToString() + ".pdf";
+        //var path = Path.Join(Path.GetTempPath(), filename);
+        // создаем источник токена
+        genTaskCancel = new CancellationTokenSource();
+        // записываем параметры
+        generator.SetOptions(new PDFOptions(
+            new PaperType(
+                new Dimensions<float>(
+                    PageWidth != null ? (float)PageWidth : 0F,
+                    PageHeight != null ? (float)PageHeight : 0F,
+                    MeasurementUnit.Millimeter
+                ),
+                10
+            ),
+            new Dimensions<float>(
+                (float)MatrixFrameWidth,
+                (float)MatrixFrameHeight,
+                MeasurementUnit.Millimeter
+            ),
+            (float)MatrixSize
+        ));
+        // создаем токен и фоновую задачу
+        var token = genTaskCancel.Token;
+        var genTask = new Task(() => GeneratePreview(token), token);
+        // запускаем задачу
+        genTask.Start();
+    }
+
+    internal void StartGeneration(Uri outPath) {
+        genTaskCancel = new CancellationTokenSource();
+        // записываем параметры
+        generator.SetOptions(new PDFOptions(
+            new PaperType(
+                new Dimensions<float>(
+                    PageWidth != null ? (float)PageWidth : 0F,
+                    PageHeight != null ? (float)PageHeight : 0F,
+                    MeasurementUnit.Millimeter
+                ),
+                10
+            ),
+            new Dimensions<float>(
+                (float)MatrixFrameWidth,
+                (float)MatrixFrameHeight,
+                MeasurementUnit.Millimeter
+            ),
+            (float)MatrixSize
+        ));
+
+        // создаем токен и фоновую задачу
+        var token = genTaskCancel.Token;
+        var genTask = new Task(() => GeneratePDF(
+            HttpUtility.UrlDecode(CSVFile.Replace("file:///", "")),
+            token,
+            IgnorePageSize,
+            outPath
+        ), token);
+        // запускаем задачу
+        genTask.Start();
+    }
+
+    private void GeneratePDF(string url, CancellationToken token, bool ignorePageSize, Uri outPath) {
+        using var stream = File.Open(url, FileMode.Open);
+        using StreamReader reader = new(stream);
+
+        string fileContents = reader.ReadToEnd();
+
+        stream.Close();
+
+        ShowGenerationProgress = true;
+        try {
+            var pdf = generator.Generate(
+                fileContents.Split("\n", StringSplitOptions.RemoveEmptyEntries),
+                string.Format("Коды продуктов - {0}", System.IO.Path.GetFileNameWithoutExtension(url)),
+                (mat, progress) => {
+                    GenerationProgress = progress * 100;
+                },
+                token,
+                ignorePageSize
+            );
+            if (outPath != null) {
+                pdf.Save(HttpUtility.UrlDecode(outPath.LocalPath));
+                Utils.OpenUrl(HttpUtility.UrlDecode(outPath.OriginalString));
+            }
+            Debug.WriteLine("Generated");
+        }
+        catch (OperationCanceledException) {
+            Debug.WriteLine("Operation was canceled!");
+        }
+        ShowGenerationProgress = false;
+    }
+
+    internal void CancelGeneration() {
+        genTaskCancel?.Cancel();
+        ShowGenerationProgress = false;
     }
 }
