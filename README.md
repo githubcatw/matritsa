@@ -10,6 +10,7 @@
     - `matritsa.Desktop` - код для программы для компьютеров.
     - `Matritsa.PDFGenerator` - библиотека для генерации PDF файлов.
 - `leglaunch` - исходный код программы запуска Матрицы для старых компьютеров.
+- `testfiles` - CSV-файлы для тестирования Матрицы.
 - Файлы .iss (Inno Setup):
     - `install_source.iss` - исходный код полного установщика.
     - `install_source_no_dotnet.iss` - исходный код установщика Матрицы без дистрибутивов .NET и Visual C++.
