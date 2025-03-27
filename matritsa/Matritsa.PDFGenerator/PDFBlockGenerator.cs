@@ -2,7 +2,7 @@
 using PdfSharp.Drawing;
 using System;
 using System.Collections.Generic;
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_BLOCK_DEBUG
 using System.Diagnostics;
 using System.Text;
 #endif
@@ -30,12 +30,12 @@ namespace Matritsa.PDFGenerator {
                 for (int x = 0; x < data.GetLength(1); x++) {
                     // если значение поменялось, обьявляем новый блок
                     if (data[x, y] != lastValue) {
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_BLOCK_DEBUG
                         Debug.WriteLine($"[PBG.Get2BIAB] diff value detected! at x={x} y={y}, {data[x, y]} != {lastValue} (len={blockLength})");
 #endif
                         var sbrush = palette.GetBrush(lastValue);
                         if (sbrush != null) {
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_BLOCK_DEBUG
                             Debug.WriteLine($"[PBG.Get2BIAB] pushing block");
                             Debug.WriteLine($"[PBG.Get2BIAB] X: {Math.Max(startX + (offsetIntoData - blockLength) * pixelSize, 0)}");
                             Debug.WriteLine($"[PBG.Get2BIAB] X: Math.Max({startX} + ({offsetIntoData} - {blockLength}) * {pixelSize}, 0)");
@@ -63,20 +63,20 @@ namespace Matritsa.PDFGenerator {
                         blockLength = 0;
                         lastValue = data[x, y];
                     }
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_BLOCK_DEBUG
                     Debug.WriteLine($"[PBG.Get2BIAB]updating blen and oid (was len={blockLength} oid={offsetIntoData})");
 #endif
                     // обновляем переменные
                     blockLength++;
                     offsetIntoData++;
                 }
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_BLOCK_DEBUG
                 Debug.WriteLine($"[PBG.Get2BIAB] loop done (len={blockLength} oid={offsetIntoData})");
 #endif
                 // добавляем оставшееся в блок
                 var brush = palette.GetBrush(lastValue);
                 if (brush != null) {
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_BLOCK_DEBUG
                     Debug.WriteLine($"[PBG.Get2BIAB] creating sub");
 #endif
                     rects.Add(

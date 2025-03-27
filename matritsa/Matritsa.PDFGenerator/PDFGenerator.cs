@@ -7,7 +7,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_MAIN_DEBUG
 using System.Diagnostics;
 using System.Text;
 #endif
@@ -79,7 +79,7 @@ namespace Matritsa.PDFGenerator {
             CancellationToken? token = null,
             bool debugRainbow = false
         ) {
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_MAIN_DEBUG
             Debug.WriteLine($"[PG.GenerateOnePerPage] laying out {codes.Length} codes");
 #endif
             var document = new PdfDocument();
@@ -107,16 +107,16 @@ namespace Matritsa.PDFGenerator {
                 if (debugRainbow) {
                     palette = new MatrixPalette(XBrushes.White, CodeLayoutEngine.DebugBrushes[new Random().Next(0, CodeLayoutEngine.DebugBrushes.Length)]);
                 }
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_MAIN_DEBUG
                 Debug.WriteLine($"[PG.GenerateOnePerPage] generating code for #{done}");
 #endif
                 var codeData = LayoutEngine.GenerateMatrix(code, 0, 0, palette);
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_MAIN_DEBUG
                 Debug.WriteLine($"[PG.GenerateOnePerPage] generated code for #{done}");
                 Debug.WriteLine(code);
 #endif
                 foreach (var block in codeData) {
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_MAIN_DEBUG
                     Debug.WriteLine($"[PG.GenerateOnePerPage] drawing block {block}");
 #endif
                     gfx.DrawBlock(block);//, (block.brush == XBrushes.White ? XBrushes.White : DebugBrushes[new Random().Next(0, DebugBrushes.Length)]));
@@ -169,7 +169,7 @@ namespace Matritsa.PDFGenerator {
                             // даем ошибку
                             token?.ThrowIfCancellationRequested();
                         }
-                        #if PDFGEN_DEBUG
+                        #if PDFGEN_DEBUG || PDFGEN_MAIN_DEBUG
                         Debug.WriteLine($"[PG.GenerateMultiple] drawing block {block}");
                         #endif
                         gfx.DrawBlock(block);//, (block.brush == XBrushes.White ? XBrushes.White : DebugBrushes[new Random().Next(0, DebugBrushes.Length)]));

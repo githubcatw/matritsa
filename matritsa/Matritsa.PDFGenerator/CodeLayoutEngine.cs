@@ -6,7 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_LAYOUT_DEBUG
 using System.Diagnostics;
 using System.Text;
 #endif
@@ -78,14 +78,14 @@ namespace Matritsa.PDFGenerator {
             bool debugRainbow = false
         ) {
 
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_LAYOUT_DEBUG
             Debug.WriteLine($"[CLE.LayoutMultiple] laying out {codes.Length} codes");
 #endif
             int pageCount = 0;
             // посчитаем количество страниц
             Dimensions<int> matricesPerPage = CountCodesPerPage();
             int totalMatricesPerPage = matricesPerPage.Area();
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_LAYOUT_DEBUG
             Debug.WriteLine($"[CLE.LayoutMultiple] h={matricesPerPage.Height} w={matricesPerPage.Width} S={totalMatricesPerPage}");
 #endif
             if (printPreview) {
@@ -96,7 +96,7 @@ namespace Matritsa.PDFGenerator {
                 if (pageCount == 0) {
                     pageCount = 1;
                 }
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_LAYOUT_DEBUG
                 Debug.WriteLine($"[CLE.LayoutMultiple] pages: {pageCount}");
 #endif
             }
@@ -109,14 +109,14 @@ namespace Matritsa.PDFGenerator {
                     // даем ошибку
                     token?.ThrowIfCancellationRequested();
                 }
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_LAYOUT_DEBUG
                 Debug.WriteLine("[CLE.LayoutMultiple] writing new page");
 #endif
                 // обьявляем координаты
                 float x = PointConversion.ToPoints(Options.PaperType.Padding, Options.PaperType.Unit);
                 float y = PointConversion.ToPoints(Options.PaperType.Padding, Options.PaperType.Unit);
                 // берем каждый код, ограничиваясь количеством кодов, которые можно поместить на странице
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_LAYOUT_DEBUG
                 Debug.WriteLine($"[CLE.GenerateMultiple] while ({lastMatrix} < Math.Min({codes.Length}, {totalMatricesPerPage * (page+1)}) [{Math.Min(codes.Length, totalMatricesPerPage * (page + 1))}])");
 #endif
                 int limit = printPreview ? totalMatricesPerPage : Math.Min(codes.Length, totalMatricesPerPage * (page + 1));
@@ -135,30 +135,30 @@ namespace Matritsa.PDFGenerator {
                     if (debugRainbow) {
                         palette = new MatrixPalette(XBrushes.White, DebugBrushes[new Random().Next(0, DebugBrushes.Length)]);
                     }
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_LAYOUT_DEBUG
                     Debug.WriteLine($"[CLE.LayoutMultiple] generating code for #{lastMatrix} @ x={x} y={y}");
 #endif
                     if (printPreview) {
                         // если режим print preview, чертим квадрат
                         list[page][lastMatrix] = new MatrixBlock(new XRect(x, y, Options.MatrixSizeInPoints, Options.MatrixSizeInPoints), palette.matrixBrush);
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_LAYOUT_DEBUG
                         Debug.WriteLine($"[CLE.LayoutMultiple] placed square #{lastMatrix} @ x={x} y={y}");
 #endif
                     }
                     else {
                         list[page] = list[page].Concat(GenerateMatrix(codes[lastMatrix], x, y, palette)).ToArray();
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_LAYOUT_DEBUG
                         Debug.WriteLine($"[CLE.LayoutMultiple] generated code for #{lastMatrix}");
                         Debug.WriteLine(code);
 #endif
                     }
                     // если нет места по оси x, обновим y
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_LAYOUT_DEBUG
                     Debug.WriteLine($"[CLE.LayoutMultiple] {x == Options.PaperType.GetBoundingBoxSize().Width - Options.MatrixFrameSizeInPoints.Width}");
                     Debug.WriteLine($"[CLE.LayoutMultiple] {x} == {Options.PaperType.GetBoundingBoxSize().Width} - {Options.MatrixFrameSizeInPoints.Width}");
 #endif
                     if (x >= Options.PaperType.GetBoundingBoxSize().ToPoints().Width - Options.MatrixFrameSizeInPoints.Width) {
-#if PDFGEN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_LAYOUT_DEBUG
                         Debug.WriteLine($"[CLE.LayoutMultiple] linebreak");
 #endif
                         x = PointConversion.ToPoints(Options.PaperType.Padding, Options.PaperType.Unit);
