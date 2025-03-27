@@ -178,7 +178,12 @@ namespace Matritsa.PDFGenerator {
                         x += Options.MatrixFrameSizeInPoints.Width;
                     }
                     // отправляем сигнал
-                    codeGenerated?.Invoke(new PDFGenerationUpdate(PDFGenerationStage.Layout, lastMatrix, (float)(lastMatrix + 1) / codes.Length));
+                    codeGenerated?.Invoke(new PDFGenerationUpdate(
+                        PDFGenerationStage.Layout,
+                        lastMatrix,
+                        (float)(lastMatrix + 1) / codes.Length,
+                        pageCount
+                    ));
                     // переходим на следующий код
                     lastMatrix++;
                 }

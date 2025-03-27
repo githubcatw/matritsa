@@ -19,11 +19,16 @@
         /// Прогресс.
         /// </summary>
         public float Progress { get; }
+        /// <summary>
+        /// Общее количество страниц.
+        /// </summary>
+        public int TotalPages { get; }
 
-        public PDFGenerationUpdate(PDFGenerationStage stage, int currentElement, float progress, int? currentPage = null) {
+        public PDFGenerationUpdate(PDFGenerationStage stage, int currentElement, float progress, int totalPages, int? currentPage = null) {
             Stage = stage;
             CurrentPage = currentPage;
             CurrentElement = currentElement;
+            TotalPages = totalPages;
             Progress = progress;
         }
     }

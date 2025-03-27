@@ -159,7 +159,12 @@ namespace Matritsa.PDFGenerator {
                 }
                 // отправляем сигнал
                 done++;
-                codeGenerated?.Invoke(new PDFGenerationUpdate(PDFGenerationStage.Layout, done, (float)(done + 1) / codes.Length));
+                codeGenerated?.Invoke(new PDFGenerationUpdate(
+                    PDFGenerationStage.Layout,
+                    done,
+                    (float)(done + 1) / codes.Length,
+                    codes.Length
+                ));
             }
             return document;
         }
@@ -210,7 +215,13 @@ namespace Matritsa.PDFGenerator {
                         Debug.WriteLine($"[PG.GenerateMultiple] drawing block {block}");
 #endif
                         gfx.DrawBlock(blockPage[i]);//, (block.brush == XBrushes.White ? XBrushes.White : DebugBrushes[new Random().Next(0, DebugBrushes.Length)]));
-                        codeGenerated?.Invoke(new PDFGenerationUpdate(PDFGenerationStage.Render, i, (float)i / blockPage.Length, pageIndex));
+                        codeGenerated?.Invoke(new PDFGenerationUpdate(
+                            PDFGenerationStage.Render,
+                            i,
+                            (float)i / blockPage.Length,
+                            pageIndex,
+                            layout.Length
+                        ));
                     }
                 }
             } catch (OperationCanceledException e) {
