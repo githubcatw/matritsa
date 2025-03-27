@@ -2,7 +2,7 @@
 
 [Setup]
 AppName=Матрица
-AppVersion=1.0-beta3
+AppVersion=1.0-beta5
 WizardStyle=modern
 DefaultDirName={autopf}\Matritsa
 DefaultGroupName=Матрица
