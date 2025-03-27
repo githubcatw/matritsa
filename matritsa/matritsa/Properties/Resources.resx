@@ -238,4 +238,7 @@
   <data name="layoutParamsIgnore" xml:space="preserve">
     <value>Same as frame</value>
   </data>
+  <data name="printPreviewBtn" xml:space="preserve">
+    <value>Preview</value>
+  </data>
 </root>

@@ -234,4 +234,7 @@
   <data name="layoutParamsIgnore" xml:space="preserve">
     <value>Как у рамки</value>
   </data>
+  <data name="printPreviewBtn" xml:space="preserve">
+    <value>Предпросмотр</value>
+  </data>
 </root>

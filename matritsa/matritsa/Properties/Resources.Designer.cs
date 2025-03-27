@@ -358,6 +358,15 @@ namespace matritsa.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preview.
+        /// </summary>
+        public static string printPreviewBtn {
+            get {
+                return ResourceManager.GetString("printPreviewBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Centimeters.
         /// </summary>
         public static string unitCentimeter {
