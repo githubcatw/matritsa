@@ -240,4 +240,16 @@
   <data name="pdfTitle" xml:space="preserve">
     <value>Коды продуктов - {0}</value>
   </data>
+  <data name="generateProcessLayout" xml:space="preserve">
+    <value>Создавание кодов...</value>
+  </data>
+  <data name="generateProcessRenderPage" xml:space="preserve">
+    <value>Создавание страницы {0}/{1}...</value>
+  </data>
+  <data name="generateProcessRender" xml:space="preserve">
+    <value>Создавание страниц...</value>
+  </data>
+  <data name="generateBlockedReasonUnavailable" xml:space="preserve">
+    <value>Сейчас недоступно</value>
+  </data>
 </root>

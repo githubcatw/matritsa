@@ -219,8 +219,8 @@ namespace Matritsa.PDFGenerator {
                             PDFGenerationStage.Render,
                             i,
                             (float)i / blockPage.Length,
-                            pageIndex,
-                            layout.Length
+                            layout.Length,
+                            pageIndex
                         ));
                     }
                 }

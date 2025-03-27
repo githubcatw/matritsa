@@ -245,4 +245,17 @@
     <value>Product codes - {0}</value>
     <comment>{0} - csv file name</comment>
   </data>
+  <data name="generateProcessLayout" xml:space="preserve">
+    <value>Creating codes...</value>
+  </data>
+  <data name="generateProcessRenderPage" xml:space="preserve">
+    <value>Creating page {0}/{1}...</value>
+    <comment>{0}, {1} - page numbers</comment>
+  </data>
+  <data name="generateProcessRender" xml:space="preserve">
+    <value>Creating pages...</value>
+  </data>
+  <data name="generateBlockedReasonUnavailable" xml:space="preserve">
+    <value>Currently unavailable</value>
+  </data>
 </root>

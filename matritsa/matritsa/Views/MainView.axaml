@@ -117,7 +117,7 @@
 		
 		<Border Grid.RowSpan="9" Grid.ColumnSpan="8" Name="LoadingCover" IsVisible="{Binding ShowGenerationProgress}">
 			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-				<Label Content="{x:Static lang:Resources.generateProcess}" Name="ProgressText"
+				<Label Content="{Binding GenerationStage}" Name="ProgressText"
 					   Foreground="White" FontSize="20" Margin="0 0 0 10"></Label>
 				<ProgressBar Minimum="0" Maximum="100" Value="{Binding GenerationProgress}" Name="ProgressIndicator"></ProgressBar>
 				<Button Name="Cancel" Margin="0 10 0 0" HorizontalAlignment="Stretch"

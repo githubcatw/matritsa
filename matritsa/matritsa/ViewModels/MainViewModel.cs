@@ -105,6 +105,10 @@ public class MainViewModel : ViewModelBase
         get => _showGen;
         set => this.RaiseAndSetIfChanged(ref _showGen, value);
     }
+    public string GenerationStage {
+        get => _genS;
+        set => this.RaiseAndSetIfChanged(ref _genS, value);
+    }
 
     private float? _pageW = 297;
     private float? _pageH = 210;
@@ -112,6 +116,7 @@ public class MainViewModel : ViewModelBase
     private float? _matFW = 15;
     private float? _matFH = 15;
     private float? _genPs = 0;
+    private string? _genS = null;
     private bool _showGen = false;
     private bool _ignPgSz = false;
 
@@ -128,6 +133,7 @@ public class MainViewModel : ViewModelBase
         var layout = generator.GeneratePrintPreviewData(
             (update) => {
                 GenerationProgress = update.Progress * 100;
+                GenerationStage = update.GetProgressString();
             },
             token
         );
@@ -212,6 +218,7 @@ public class MainViewModel : ViewModelBase
                 string.Format(Resources.pdfTitle, Path.GetFileNameWithoutExtension(url)),
                 (update) => {
                     GenerationProgress = update.Progress * 100;
+                    GenerationStage = update.GetProgressString();
                 },
                 token,
                 ignorePageSize

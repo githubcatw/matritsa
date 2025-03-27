@@ -232,6 +232,15 @@ namespace matritsa.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Currently unavailable.
+        /// </summary>
+        public static string generateBlockedReasonUnavailable {
+            get {
+                return ResourceManager.GetString("generateBlockedReasonUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save file.
         /// </summary>
         public static string generateBtn {
@@ -255,6 +264,33 @@ namespace matritsa.Properties {
         public static string generateProcessCancel {
             get {
                 return ResourceManager.GetString("generateProcessCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating codes....
+        /// </summary>
+        public static string generateProcessLayout {
+            get {
+                return ResourceManager.GetString("generateProcessLayout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating pages....
+        /// </summary>
+        public static string generateProcessRender {
+            get {
+                return ResourceManager.GetString("generateProcessRender", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating page {0}/{1}....
+        /// </summary>
+        public static string generateProcessRenderPage {
+            get {
+                return ResourceManager.GetString("generateProcessRenderPage", resourceCulture);
             }
         }
         
