@@ -85,6 +85,22 @@ namespace Matritsa.PDFGenerator {
             );
         }
 
+        public MatrixBlock[] GeneratePrintPreviewData(
+            Action<int, float>? codeGenerated = null,
+            CancellationToken? token = null,
+            bool debugRainbow = false
+        ) {
+            var layout = LayoutEngine.LayoutMultiple(
+                new string[0],
+                codeGenerated,
+                token,
+                true,
+                debugRainbow
+            );
+            if (layout.Length == 0) throw new NullReferenceException("No layout was returned.");
+            return layout[0];
+        }
+
         /// <summary>
         /// Генерирует документ с кодами, где на странице может быть только один код.
         /// <br/>

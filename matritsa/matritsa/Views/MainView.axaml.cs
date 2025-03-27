@@ -77,8 +77,8 @@ public partial class MainView : UserControl {
                 return;
             }
             // сгенерируем название временного файла
-            var filename = "matrigen_preview_" + new Random().Next().ToString() + ".pdf";
-            var path = Path.Join(Path.GetTempPath(), filename);
+            //var filename = "matrigen_preview_" + new Random().Next().ToString() + ".pdf";
+            //var path = Path.Join(Path.GetTempPath(), filename);
             // создаем источник токена
             genTaskCancel = new CancellationTokenSource();
             // записываем параметры
@@ -100,22 +100,24 @@ public partial class MainView : UserControl {
             ));
             // создаем токен и фоновую задачу
             var token = genTaskCancel.Token;
-            var genTask = new Task(() => {
-                var pdf = generator.GeneratePrintPreview(
-                    "Коды продуктов",
-                    async (mat, progress) => {
-                        await Dispatcher.UIThread.InvokeAsync(() => {
-                            ProgressIndicator.Value = progress * 100;
-                        });
-                    },
-                    token
-                );
-                pdf.Save(path);
-                Utils.OpenUrl(path);
-            }, token);
+            var genTask = new Task(() => GeneratePreview(token), token);
             // запускаем задачу
             genTask.Start();
         }
+    }
+
+    private void GeneratePreview(CancellationToken token) {
+
+        var layout = generator.GeneratePrintPreviewData(
+            async (mat, progress) => {
+                await Dispatcher.UIThread.InvokeAsync(() => {
+                    ProgressIndicator.Value = progress * 100;
+                });
+            },
+            token
+        );
+        //pdf.Save(path);
+        //Utils.OpenUrl(path);
     }
 
     private void SaveFile_Click(object? sender, RoutedEventArgs e) {
@@ -192,7 +194,7 @@ public partial class MainView : UserControl {
         try {
             var pdf = generator.Generate(
                 fileContents.Split("\n", StringSplitOptions.RemoveEmptyEntries),
-                string.Format("Коды продуктов - {0}", Path.GetFileNameWithoutExtension(url)),
+                string.Format("Коды продуктов - {0}", System.IO.Path.GetFileNameWithoutExtension(url)),
                 async (mat, progress) => {
                     await Dispatcher.UIThread.InvokeAsync(() => {
                         ProgressIndicator.Value = progress * 100;
