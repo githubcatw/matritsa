@@ -6,12 +6,10 @@ using Matritsa.PDFGenerator;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
-using System.Reflection.Emit;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.IO;
-using Avalonia.Threading;
 
 namespace matritsa.ViewModels;
 
