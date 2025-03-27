@@ -16,7 +16,7 @@ OutputBaseFilename=setup-matritsa
 Source: "matritsa\matritsa.Desktop\bin\Release\net6.0\matrigen.exe"; DestDir: "{app}"
 Source: "matritsa\matritsa.Desktop\bin\Release\net6.0\*.dll"; DestDir: "{app}"
 Source: "matritsa\matritsa.Desktop\bin\Release\net6.0\*.json"; DestDir: "{app}"
-Source: "matritsa\matritsa.Desktop\bin\Release\net6.0\runtimes\win\*"; DestDir: "{app}\runtimes\win"; Flags: recursesubdirs
+; Source: "matritsa\matritsa.Desktop\bin\Release\net6.0\runtimes\win\*"; DestDir: "{app}\runtimes\win"; Flags: recursesubdirs
 Source: "matritsa\matritsa.Desktop\bin\Release\net6.0\runtimes\win-arm64\*"; DestDir: "{app}\runtimes\win-arm64"; Flags: recursesubdirs
 Source: "matritsa\matritsa.Desktop\bin\Release\net6.0\runtimes\win-x64\*"; DestDir: "{app}\runtimes\win-x64"; Flags: recursesubdirs
 Source: "matritsa\matritsa.Desktop\bin\Release\net6.0\runtimes\win-x86\*"; DestDir: "{app}\runtimes\win-x86"; Flags: recursesubdirs
