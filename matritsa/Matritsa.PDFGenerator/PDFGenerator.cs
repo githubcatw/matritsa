@@ -1,11 +1,7 @@
-﻿using DataMatrix.NetCore;
-using Matritsa.PDFGenerator.Data;
-using Matritsa.PDFGenerator.Util;
+﻿using Matritsa.PDFGenerator.Data;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 #if PDFGEN_DEBUG || PDFGEN_MAIN_DEBUG
 using System.Diagnostics;
