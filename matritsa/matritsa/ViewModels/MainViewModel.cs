@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace matritsa.ViewModels;
 
@@ -191,10 +192,18 @@ public class MainViewModel : ViewModelBase
             (float)MatrixSize
         ));
 
+        // убираем часть file:
+        var path = CSVFile.Replace("file://", "");
+        // на windows убираем и первый /
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+            path = path.Remove(0, 1);
+        }
+        // делаем urldecode
+        path = HttpUtility.UrlDecode(path);
         // создаем токен и фоновую задачу
         var token = genTaskCancel.Token;
         var genTask = new Task(() => GeneratePDF(
-            HttpUtility.UrlDecode(CSVFile.Replace("file:///", "")),
+            path,
             token,
             IgnorePageSize,
             outPath
