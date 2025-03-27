@@ -12,7 +12,7 @@ namespace matritsa.ViewModels {
             ShowDialog = new Interaction<MainWindowViewModel, PrintPreviewWindow?>();
 
             BuyMusicCommand = ReactiveCommand.CreateFromTask(async () => {
-                var result = await ShowDialog.Handle(null);
+                //var result = await ShowDialog.Handle(null);
             });
         }
 
