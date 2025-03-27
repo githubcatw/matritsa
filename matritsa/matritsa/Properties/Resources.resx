@@ -241,4 +241,8 @@
   <data name="printPreviewBtn" xml:space="preserve">
     <value>Preview</value>
   </data>
+  <data name="pdfTitle" xml:space="preserve">
+    <value>Product codes - {0}</value>
+    <comment>{0} - csv file name</comment>
+  </data>
 </root>

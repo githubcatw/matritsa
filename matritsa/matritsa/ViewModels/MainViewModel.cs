@@ -211,7 +211,7 @@ public class MainViewModel : ViewModelBase
         try {
             var pdf = generator.Generate(
                 fileContents.Split("\n", StringSplitOptions.RemoveEmptyEntries),
-                string.Format("Коды продуктов - {0}", System.IO.Path.GetFileNameWithoutExtension(url)),
+                string.Format(Resources.pdfTitle, Path.GetFileNameWithoutExtension(url)),
                 (mat, progress) => {
                     GenerationProgress = progress * 100;
                 },

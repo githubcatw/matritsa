@@ -358,6 +358,15 @@ namespace matritsa.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Product codes - {0}.
+        /// </summary>
+        public static string pdfTitle {
+            get {
+                return ResourceManager.GetString("pdfTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preview.
         /// </summary>
         public static string printPreviewBtn {

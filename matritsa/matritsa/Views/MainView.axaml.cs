@@ -13,6 +13,7 @@ using Avalonia.Threading;
 using Avalonia.Media;
 using matritsa.Util;
 using System.Web;
+using matritsa.Properties;
 
 namespace matritsa.Views;
 
@@ -91,7 +92,7 @@ public partial class MainView : UserControl {
                 if (myTopLevel != null) {
                     // запрашиваем файл
                     var file = await myTopLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions() {
-                        Title = "Сохранить файл",
+                        Title = Properties.Resources.dlgSaveFile,
                         FileTypeChoices = [FilePickerFileTypes.Pdf]
                     });
                     if (file == null) {
@@ -115,7 +116,7 @@ public partial class MainView : UserControl {
         if (myTopLevel != null) {
             // запрашиваем файл
             var file = await myTopLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions() {
-                Title = "Выбрать файл",
+                Title = Properties.Resources.dlgOpenCode,
                 FileTypeFilter = [CSV]
             });
             // передаем его в viewmodel

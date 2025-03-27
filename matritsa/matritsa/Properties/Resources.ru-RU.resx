@@ -237,4 +237,7 @@
   <data name="printPreviewBtn" xml:space="preserve">
     <value>Предпросмотр</value>
   </data>
+  <data name="pdfTitle" xml:space="preserve">
+    <value>Коды продуктов - {0}</value>
+  </data>
 </root>
