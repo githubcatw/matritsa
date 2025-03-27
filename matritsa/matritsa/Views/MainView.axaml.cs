@@ -82,7 +82,7 @@ public partial class MainView : UserControl {
             // создаем источник токена
             genTaskCancel = new CancellationTokenSource();
             // записываем параметры
-            generator.Options = new PDFOptions(
+            generator.SetOptions(new PDFOptions(
                 new PaperType(
                     new Dimensions<float>(
                         viewModel.PageWidth != null ? (float)viewModel.PageWidth : 0F,
@@ -97,7 +97,7 @@ public partial class MainView : UserControl {
                     MeasurementUnit.Millimeter
                 ),
                 (float)viewModel.MatrixSize
-            );
+            ));
             // создаем токен и фоновую задачу
             var token = genTaskCancel.Token;
             var genTask = new Task(() => {
@@ -129,7 +129,7 @@ public partial class MainView : UserControl {
                     return;
                 }
                 // записываем параметры
-                generator.Options = new PDFOptions(
+                generator.SetOptions(new PDFOptions(
                     new PaperType(
                         new Dimensions<float>(
                             viewModel.PageWidth != null ? (float)viewModel.PageWidth : 0F,
@@ -144,7 +144,7 @@ public partial class MainView : UserControl {
                         MeasurementUnit.Millimeter
                     ),
                     (float)viewModel.MatrixSize
-                );
+                ));
                 // создаем токен и фоновую задачу
                 var token = genTaskCancel.Token;
                 var genTask = new Task(() => GeneratePDF(
