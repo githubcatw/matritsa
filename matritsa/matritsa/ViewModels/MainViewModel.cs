@@ -126,8 +126,8 @@ public class MainViewModel : ViewModelBase
 
     internal void GeneratePreview(CancellationToken token) {
         var layout = generator.GeneratePrintPreviewData(
-            (mat, progress) => {
-                GenerationProgress = progress * 100;
+            (update) => {
+                GenerationProgress = update.Progress * 100;
             },
             token
         );
@@ -210,8 +210,8 @@ public class MainViewModel : ViewModelBase
             var pdf = generator.Generate(
                 fileContents.Split("\n", StringSplitOptions.RemoveEmptyEntries),
                 string.Format(Resources.pdfTitle, Path.GetFileNameWithoutExtension(url)),
-                (mat, progress) => {
-                    GenerationProgress = progress * 100;
+                (update) => {
+                    GenerationProgress = update.Progress * 100;
                 },
                 token,
                 ignorePageSize

@@ -35,7 +35,7 @@ namespace Matritsa.PDFGenerator {
         /// </summary>
         /// <param name="codes">Коды.</param>
         /// <param name="name">Название документа.</param>
-        /// <param name="codeGenerated">Событие, которое вызывается при верстании, а потом при размещении каждого кода. Параметры: количество сверстанных кодов и прогресс.</param>
+        /// <param name="codeGenerated">Событие, которое вызывается при верстании, а потом при размещении каждого кода.</param>
         /// <param name="token">Токен отмены (для работы на отдельном потоке).</param>
         /// <param name="onePerPage">Включает специальный режим генерации документа с одним кодом на каждой странице.</param>
         /// <param name="debugRainbow">Функция для отладки: каждый код будет иметь свой цвет.</param>
@@ -43,7 +43,7 @@ namespace Matritsa.PDFGenerator {
         public PdfDocument Generate(
             string[] codes,
             string name = "Коды продуктов",
-            Action<int, float>? codeGenerated = null,
+            Action<PDFGenerationUpdate>? codeGenerated = null,
             CancellationToken? token = null,
             bool onePerPage = false,
             bool debugRainbow = false
@@ -67,7 +67,7 @@ namespace Matritsa.PDFGenerator {
 
         public PdfDocument GeneratePrintPreview(
             string name = "Коды продуктов",
-            Action<int, float>? codeGenerated = null,
+            Action<PDFGenerationUpdate>? codeGenerated = null,
             CancellationToken? token = null,
             bool debugRainbow = false
         ) {
@@ -82,7 +82,7 @@ namespace Matritsa.PDFGenerator {
         }
 
         public MatrixBlock[] GeneratePrintPreviewData(
-            Action<int, float>? codeGenerated = null,
+            Action<PDFGenerationUpdate>? codeGenerated = null,
             CancellationToken? token = null,
             bool debugRainbow = false
         ) {
@@ -104,14 +104,14 @@ namespace Matritsa.PDFGenerator {
         /// </summary>
         /// <param name="codes">Коды.</param>
         /// <param name="name">Название документа.</param>
-        /// <param name="codeGenerated">Событие, которое вызывается при верстании, а потом при размещении каждого кода. Параметры: количество сверстанных кодов и прогресс.</param>
+        /// <param name="codeGenerated">Событие, которое вызывается при верстании, а потом при размещении каждого кода.</param>
         /// <param name="token">Токен отмены (для работы на отдельном потоке).</param>
         /// <param name="debugRainbow">Функция для отладки: каждый код будет иметь свой цвет.</param>
         /// <returns>Готовый документ.</returns>
         public PdfDocument GenerateOnePerPage(
             string[] codes,
             string name = "Коды продуктов",
-            Action<int, float>? codeGenerated = null,
+            Action<PDFGenerationUpdate>? codeGenerated = null,
             CancellationToken? token = null,
             bool debugRainbow = false
         ) {
@@ -159,7 +159,7 @@ namespace Matritsa.PDFGenerator {
                 }
                 // отправляем сигнал
                 done++;
-                codeGenerated?.Invoke(done, (float)(done + 1) / codes.Length);
+                codeGenerated?.Invoke(new PDFGenerationUpdate(PDFGenerationStage.Layout, done, (float)(done + 1) / codes.Length));
             }
             return document;
         }
@@ -169,7 +169,7 @@ namespace Matritsa.PDFGenerator {
         /// </summary>
         /// <param name="codes">Коды.</param>
         /// <param name="name">Название документа.</param>
-        /// <param name="codeGenerated">Событие, которое вызывается при верстании, а потом при размещении каждого кода. Параметры: количество сверстанных кодов и прогресс.</param>
+        /// <param name="codeGenerated">Событие, которое вызывается при верстании, а потом при размещении каждого кода.</param>
         /// <param name="token">Токен отмены (для работы на отдельном потоке).</param>
         /// <param name="printPreview">Активирует режим предпросмотра.</param>
         /// <param name="debugRainbow">Функция для отладки: каждый код будет иметь свой цвет.</param>
@@ -177,7 +177,7 @@ namespace Matritsa.PDFGenerator {
         public PdfDocument GenerateMultiple(
             string[] codes,
             string name = "Коды продуктов",
-            Action<int, float>? codeGenerated = null,
+            Action<PDFGenerationUpdate>? codeGenerated = null,
             CancellationToken? token = null,
             bool printPreview = false,
             bool debugRainbow = false
@@ -189,8 +189,9 @@ namespace Matritsa.PDFGenerator {
             // верстаем коды
             try {
                 var layout = LayoutEngine.LayoutMultiple(codes, codeGenerated, token, printPreview, debugRainbow);
-                foreach (var blockPage in layout) {
+                for (int pageIndex = 0; pageIndex < layout.Length; pageIndex++) {
                     PdfPage myPage = document.AddPage();
+                    MatrixBlock[] blockPage = layout[pageIndex];
                     // размер
                     myPage.Width = XUnit.FromMillimeter(Options.PaperType.Size.Width);
                     myPage.Height = XUnit.FromMillimeter(Options.PaperType.Size.Height);
@@ -209,7 +210,7 @@ namespace Matritsa.PDFGenerator {
                         Debug.WriteLine($"[PG.GenerateMultiple] drawing block {block}");
 #endif
                         gfx.DrawBlock(blockPage[i]);//, (block.brush == XBrushes.White ? XBrushes.White : DebugBrushes[new Random().Next(0, DebugBrushes.Length)]));
-                        codeGenerated?.Invoke(i, (float)i / blockPage.Length);
+                        codeGenerated?.Invoke(new PDFGenerationUpdate(PDFGenerationStage.Render, i, (float)i / blockPage.Length, pageIndex));
                     }
                 }
             } catch (OperationCanceledException e) {

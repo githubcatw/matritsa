@@ -74,14 +74,14 @@ namespace Matritsa.PDFGenerator {
         /// Генерирует верстку кодов.
         /// </summary>
         /// <param name="codes">Коды.</param>
-        /// <param name="codeGenerated">Событие, которое вызывается при верстании каждого кода. Параметры: количество сверстанных кодов и прогресс.</param>
+        /// <param name="codeGenerated">Событие, которое вызывается при верстании каждого кода.</param>
         /// <param name="token">Токен отмены (для работы на отдельном потоке).</param>
         /// <param name="printPreview">Активирует режим предпросмотра.</param>
         /// <param name="debugRainbow">Функция для отладки: каждый код будет иметь свой цвет.</param>
         /// <returns>2D-массив с блоками. Первая координата указывает страницу, вторая указывает блок.</returns>
         public MatrixBlock[][] LayoutMultiple(
             string[] codes,
-            Action<int, float>? codeGenerated = null,
+            Action<PDFGenerationUpdate>? codeGenerated = null,
             CancellationToken? token = null,
             bool printPreview = false,
             bool debugRainbow = false
@@ -178,7 +178,7 @@ namespace Matritsa.PDFGenerator {
                         x += Options.MatrixFrameSizeInPoints.Width;
                     }
                     // отправляем сигнал
-                    codeGenerated?.Invoke(lastMatrix, (float)(lastMatrix + 1) / codes.Length);
+                    codeGenerated?.Invoke(new PDFGenerationUpdate(PDFGenerationStage.Layout, lastMatrix, (float)(lastMatrix + 1) / codes.Length));
                     // переходим на следующий код
                     lastMatrix++;
                 }
