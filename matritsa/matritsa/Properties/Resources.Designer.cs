@@ -241,6 +241,15 @@ namespace matritsa.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not yet available.
+        /// </summary>
+        public static string generateBlockedReasonUnfinished {
+            get {
+                return ResourceManager.GetString("generateBlockedReasonUnfinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save file.
         /// </summary>
         public static string generateBtn {

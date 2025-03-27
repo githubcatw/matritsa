@@ -252,4 +252,7 @@
   <data name="generateBlockedReasonUnavailable" xml:space="preserve">
     <value>Сейчас недоступно</value>
   </data>
+  <data name="generateBlockedReasonUnfinished" xml:space="preserve">
+    <value>Еще не доступно</value>
+  </data>
 </root>

@@ -257,5 +257,10 @@
   </data>
   <data name="generateBlockedReasonUnavailable" xml:space="preserve">
     <value>Currently unavailable</value>
+    <comment>use for external reasons</comment>
+  </data>
+  <data name="generateBlockedReasonUnfinished" xml:space="preserve">
+    <value>Not yet available</value>
+    <comment>use for unfinished features</comment>
   </data>
 </root>
