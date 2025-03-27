@@ -5,6 +5,7 @@ using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 #if PDFGEN_DEBUG
 using System.Diagnostics;
@@ -161,7 +162,17 @@ namespace Matritsa.PDFGenerator {
             }
             return document;
         }
-        
+
+        /// <summary>
+        /// Генерирует документ с кодами.
+        /// </summary>
+        /// <param name="codes">Коды.</param>
+        /// <param name="name">Название документа.</param>
+        /// <param name="codeGenerated">Событие, которое вызывается при верстании, а потом при размещении каждого кода. Параметры: количество сверстанных кодов и прогресс.</param>
+        /// <param name="token">Токен отмены (для работы на отдельном потоке).</param>
+        /// <param name="printPreview">Активирует режим предпросмотра.</param>
+        /// <param name="debugRainbow">Функция для отладки: каждый код будет иметь свой цвет.</param>
+        /// <returns>Готовый документ.</returns>
         public PdfDocument GenerateMultiple(
             string[] codes,
             string name = "Коды продуктов",
@@ -170,16 +181,70 @@ namespace Matritsa.PDFGenerator {
             bool printPreview = false,
             bool debugRainbow = false
         ) {
-#if PDFGEN_DEBUG
-            Debug.WriteLine($"[PG.GenerateMultiple] laying out {codes.Length} codes");
-#endif
             var document = new PdfDocument();
+            // метаинформация
+            document.Info.Title = name + (printPreview ? " (preview)" : "");
+            document.Info.Author = "Матрица";
+            // верстаем коды
+            try {
+                var layout = LayoutMultiple(codes, codeGenerated, token, printPreview, debugRainbow);
+                foreach (var blockPage in layout) {
+                    PdfPage myPage = document.AddPage();
+                    // размер
+                    myPage.Width = XUnit.FromMillimeter(Options.PaperType.Size.Width);
+                    myPage.Height = XUnit.FromMillimeter(Options.PaperType.Size.Height);
+                    // создаем XGraphics
+                    var gfx = XGraphics.FromPdfPage(myPage);
+                    foreach (var block in blockPage) {
+                        // если есть запрос отмены генерации:
+                        if (token?.IsCancellationRequested == true) {
+                            // освобождаем память
+                            gfx.Dispose();
+                            document.Dispose();
+                            // даем ошибку
+                            token?.ThrowIfCancellationRequested();
+                        }
+                        #if PDFGEN_DEBUG
+                        Debug.WriteLine($"[PG.GenerateMultiple] drawing block {block}");
+                        #endif
+                        gfx.DrawBlock(block);//, (block.brush == XBrushes.White ? XBrushes.White : DebugBrushes[new Random().Next(0, DebugBrushes.Length)]));
+                    }
+                }
+            } catch (OperationCanceledException e) {
+                // освобождаем память
+                document.Dispose();
+                // заново возвращаем ошибку
+                throw e;
+            }
+            return document;
+        }
+
+        /// <summary>
+        /// Генерирует верстку кодов.
+        /// </summary>
+        /// <param name="codes">Коды.</param>
+        /// <param name="codeGenerated">Событие, которое вызывается при верстании каждого кода. Параметры: количество сверстанных кодов и прогресс.</param>
+        /// <param name="token">Токен отмены (для работы на отдельном потоке).</param>
+        /// <param name="printPreview">Активирует режим предпросмотра.</param>
+        /// <param name="debugRainbow">Функция для отладки: каждый код будет иметь свой цвет.</param>
+        /// <returns>2D-массив с блоками. Первая координата указывает страницу, вторая указывает блок.</returns>
+        public MatrixBlock[][] LayoutMultiple(
+            string[] codes,
+            Action<int, float>? codeGenerated = null,
+            CancellationToken? token = null,
+            bool printPreview = false,
+            bool debugRainbow = false
+        ) {
+
+#if PDFGEN_DEBUG
+            Debug.WriteLine($"[PG.LayoutMultiple] laying out {codes.Length} codes");
+#endif
             int pageCount = 0;
             // посчитаем количество страниц
             Dimensions<int> matricesPerPage = CountCodesPerPage();
             int totalMatricesPerPage = matricesPerPage.Area();
 #if PDFGEN_DEBUG
-            Debug.WriteLine($"[PG.GenerateMultiple] h={matricesPerPage.Height} w={matricesPerPage.Width} S={totalMatricesPerPage}");
+            Debug.WriteLine($"[PG.LayoutMultiple] h={matricesPerPage.Height} w={matricesPerPage.Width} S={totalMatricesPerPage}");
 #endif
             if (printPreview) {
                 pageCount = 1;
@@ -190,30 +255,21 @@ namespace Matritsa.PDFGenerator {
                     pageCount = 1;
                 }
 #if PDFGEN_DEBUG
-                Debug.WriteLine($"[PG.GenerateMultiple] pages: {pageCount}");
+                Debug.WriteLine($"[PG.LayoutMultiple] pages: {pageCount}");
 #endif
             }
+            // создаем 2D-массив
+            var list = new MatrixBlock[pageCount][];
             int lastMatrix = 0;
-            // метаинформация
-            document.Info.Title = name + (printPreview ? " (preview)" : "");
-            document.Info.Author = "Матрица";
             for (int page = 0; page < pageCount; page++) {
                 // если есть запрос отмены генерации:
                 if (token?.IsCancellationRequested == true) {
-                    // освобождаем память
-                    document.Dispose();
                     // даем ошибку
                     token?.ThrowIfCancellationRequested();
                 }
 #if PDFGEN_DEBUG
-                Debug.WriteLine("[PG.GenerateMultiple] writing new page");
+                Debug.WriteLine("[PG.LayoutMultiple] writing new page");
 #endif
-                PdfPage myPage = document.AddPage();
-                // размер
-                myPage.Width = XUnit.FromMillimeter(Options.PaperType.Size.Width);
-                myPage.Height = XUnit.FromMillimeter(Options.PaperType.Size.Height);
-                // создаем XGraphics
-                var gfx = XGraphics.FromPdfPage(myPage);
                 // обьявляем координаты
                 float x = PointConversion.ToPoints(Options.PaperType.Padding, Options.PaperType.Unit);
                 float y = PointConversion.ToPoints(Options.PaperType.Padding, Options.PaperType.Unit);
@@ -222,12 +278,12 @@ namespace Matritsa.PDFGenerator {
                 Debug.WriteLine($"[PG.GenerateMultiple] while ({lastMatrix} < Math.Min({codes.Length}, {totalMatricesPerPage * (page+1)}) [{Math.Min(codes.Length, totalMatricesPerPage * (page + 1))}])");
 #endif
                 int limit = printPreview ? totalMatricesPerPage : Math.Min(codes.Length, totalMatricesPerPage * (page + 1));
+                // в режиме предпросмотра количество блоков известно заранее, а в режиме генерации кодов
+                // оно еще не известно, но блоки добавляются через Concat
+                list[page] = new MatrixBlock[printPreview ? totalMatricesPerPage : 0];
                 while (lastMatrix < limit) {
                     // если есть запрос отмены генерации:
                     if (token?.IsCancellationRequested == true) {
-                        // освобождаем память
-                        gfx.Dispose();
-                        document.Dispose();
                         // даем ошибку
                         token?.ThrowIfCancellationRequested();
                     }
@@ -238,33 +294,31 @@ namespace Matritsa.PDFGenerator {
                         palette = new MatrixPalette(XBrushes.White, DebugBrushes[new Random().Next(0, DebugBrushes.Length)]);
                     }
 #if PDFGEN_DEBUG
-                    Debug.WriteLine($"[PG.GenerateMultiple] generating code for #{lastMatrix} @ x={x} y={y}");
+                    Debug.WriteLine($"[PG.LayoutMultiple] generating code for #{lastMatrix} @ x={x} y={y}");
 #endif
                     if (printPreview) {
                         // если режим print preview, чертим квадрат
-                        gfx.DrawRectangle(palette.matrixBrush, new XRect(x, y, Options.MatrixSizeInPoints, Options.MatrixSizeInPoints));
+                        list[page][lastMatrix] = new MatrixBlock(new XRect(x, y, Options.MatrixSizeInPoints, Options.MatrixSizeInPoints), palette.matrixBrush);
 #if PDFGEN_DEBUG
-                        Debug.WriteLine($"[PG.GenerateMultiple] placed square #{lastMatrix} @ x={x} y={y}");
+                        Debug.WriteLine($"[PG.LayoutMultiple] placed square #{lastMatrix} @ x={x} y={y}");
 #endif
                     }
                     else {
-                        var code = GenerateMatrix(codes[lastMatrix], x, y, palette);
+                        list[page] = list[page].Concat(GenerateMatrix(codes[lastMatrix], x, y, palette)).ToArray();
 #if PDFGEN_DEBUG
-                        Debug.WriteLine($"[PG.GenerateMultiple] generated code for #{lastMatrix}");
+                        Debug.WriteLine($"[PG.LayoutMultiple] generated code for #{lastMatrix}");
                         Debug.WriteLine(code);
 #endif
-                        foreach (var block in code) {
-#if PDFGEN_DEBUG
-                            Debug.WriteLine($"[PG.GenerateMultiple] drawing block {block}");
-#endif
-                            gfx.DrawBlock(block);//, (block.brush == XBrushes.White ? XBrushes.White : DebugBrushes[new Random().Next(0, DebugBrushes.Length)]));
-                        }
                     }
-                    // если нет места по оси x, обновим y'
-                    Debug.WriteLine($"[PG.GenerateMultiple] {x == Options.PaperType.GetBoundingBoxSize().Width - Options.MatrixFrameSizeInPoints.Width}");
-                    Debug.WriteLine($"[PG.GenerateMultiple] {x} == {Options.PaperType.GetBoundingBoxSize().Width} - {Options.MatrixFrameSizeInPoints.Width}");
+                    // если нет места по оси x, обновим y
+#if PDFGEN_DEBUG
+                    Debug.WriteLine($"[PG.LayoutMultiple] {x == Options.PaperType.GetBoundingBoxSize().Width - Options.MatrixFrameSizeInPoints.Width}");
+                    Debug.WriteLine($"[PG.LayoutMultiple] {x} == {Options.PaperType.GetBoundingBoxSize().Width} - {Options.MatrixFrameSizeInPoints.Width}");
+#endif
                     if (x >= Options.PaperType.GetBoundingBoxSize().ToPoints().Width - Options.MatrixFrameSizeInPoints.Width) {
-                        Debug.WriteLine($"[PG.GenerateMultiple] linebreak");
+#if PDFGEN_DEBUG
+                        Debug.WriteLine($"[PG.LayoutMultiple] linebreak");
+#endif
                         x = PointConversion.ToPoints(Options.PaperType.Padding, Options.PaperType.Unit);
                         y += Options.MatrixFrameSizeInPoints.Height;
                     }
@@ -278,7 +332,7 @@ namespace Matritsa.PDFGenerator {
                     lastMatrix++;
                 }
             }
-            return document;
+            return list;
         }
     }
 }
