@@ -200,7 +200,7 @@ namespace Matritsa.PDFGenerator {
                     myPage.Height = XUnit.FromMillimeter(Options.PaperType.Size.Height);
                     // создаем XGraphics
                     var gfx = XGraphics.FromPdfPage(myPage);
-                    foreach (var block in blockPage) {
+                    for (int i = 0; i < blockPage.Length; i++) {
                         // если есть запрос отмены генерации:
                         if (token?.IsCancellationRequested == true) {
                             // освобождаем память
@@ -209,10 +209,11 @@ namespace Matritsa.PDFGenerator {
                             // даем ошибку
                             token?.ThrowIfCancellationRequested();
                         }
-                        #if PDFGEN_DEBUG || PDFGEN_MAIN_DEBUG
+#if PDFGEN_DEBUG || PDFGEN_MAIN_DEBUG
                         Debug.WriteLine($"[PG.GenerateMultiple] drawing block {block}");
-                        #endif
-                        gfx.DrawBlock(block);//, (block.brush == XBrushes.White ? XBrushes.White : DebugBrushes[new Random().Next(0, DebugBrushes.Length)]));
+#endif
+                        gfx.DrawBlock(blockPage[i]);//, (block.brush == XBrushes.White ? XBrushes.White : DebugBrushes[new Random().Next(0, DebugBrushes.Length)]));
+                        codeGenerated?.Invoke(i, (float)i / blockPage.Length);
                     }
                 }
             } catch (OperationCanceledException e) {
