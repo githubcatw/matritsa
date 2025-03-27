@@ -6,7 +6,7 @@
 			 xmlns:mtrc="clr-namespace:matritsa;assembly=matritsa"
 			 xmlns:util="clr-namespace:matritsa.Util;assembly=matritsa"
 			 xmlns:lang="clr-namespace:matritsa.Properties;assembly=matritsa"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="matritsa.Views.MainView"
              x:DataType="vm:MainViewModel">
     <Design.DataContext>
@@ -112,7 +112,8 @@
 			HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
 			Grid.Row="8" Grid.Column="2" Grid.ColumnSpan="2" Margin="10"
-			Content="{x:Static lang:Resources.optionsBtn}"/>
+			IsEnabled="{Binding SaveBlockedReason, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+			Content="Preview" Name="PrintPreview" ToolTip.Tip="{Binding SaveBlockedReason}" ToolTip.ShowOnDisabled="True"/>
 		
 		<Border Grid.RowSpan="9" Grid.ColumnSpan="8" Name="LoadingCover" IsVisible="False">
 			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">

@@ -36,6 +36,7 @@ public partial class MainView : UserControl {
         PickCSV.Click += PickCSV_Click;
         SaveFile.Click += SaveFile_Click;
         Cancel.Click += Cancel_Click;
+        PrintPreview.Click += PrintPreview_Click;
 
         LoadingCover.Background = new SolidColorBrush(new Color(0xaa, 0x0, 0x0, 0x0));
         Width.PointerEntered += (x, args) => {
@@ -65,6 +66,56 @@ public partial class MainView : UserControl {
             Preview.SetCodesVisibility(false);
         };
 
+    }
+
+    private void PrintPreview_Click(object? sender, RoutedEventArgs e) {
+        if (DataContext is MainViewModel viewModel) {
+            // проверяем параметры
+            if ((!viewModel.IgnorePageSize && (viewModel.PageWidth == null || viewModel.PageHeight == null)) ||
+                viewModel.MatrixFrameWidth == null || viewModel.MatrixFrameHeight == null ||
+                viewModel.MatrixSize == null) {
+                return;
+            }
+            // сгенерируем название временного файла
+            var filename = "matrigen_preview_" + new Random().Next().ToString() + ".pdf";
+            var path = Path.Join(Path.GetTempPath(), filename);
+            // создаем источник токена
+            genTaskCancel = new CancellationTokenSource();
+            // записываем параметры
+            generator.Options = new PDFOptions(
+                new PaperType(
+                    new Dimensions<float>(
+                        viewModel.PageWidth != null ? (float)viewModel.PageWidth : 0F,
+                        viewModel.PageHeight != null ? (float)viewModel.PageHeight : 0F,
+                        MeasurementUnit.Millimeter
+                    ),
+                    10
+                ),
+                new Dimensions<float>(
+                    (float)viewModel.MatrixFrameWidth,
+                    (float)viewModel.MatrixFrameHeight,
+                    MeasurementUnit.Millimeter
+                ),
+                (float)viewModel.MatrixSize
+            );
+            // создаем токен и фоновую задачу
+            var token = genTaskCancel.Token;
+            var genTask = new Task(() => {
+                var pdf = generator.GeneratePrintPreview(
+                    "Коды продуктов",
+                    async (mat, progress) => {
+                        await Dispatcher.UIThread.InvokeAsync(() => {
+                            ProgressIndicator.Value = progress * 100;
+                        });
+                    },
+                    token
+                );
+                pdf.Save(path);
+                Utils.OpenUrl(path);
+            }, token);
+            // запускаем задачу
+            genTask.Start();
+        }
     }
 
     private void SaveFile_Click(object? sender, RoutedEventArgs e) {
