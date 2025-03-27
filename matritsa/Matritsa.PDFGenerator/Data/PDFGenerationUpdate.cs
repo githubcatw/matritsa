@@ -31,5 +31,21 @@
             TotalPages = totalPages;
             Progress = progress;
         }
+
+        public float TotalProgress() {
+            // если прогресс и так общий, вернуть его
+            if (CurrentPage == null) return Progress;
+            // считаем процент каждой страницы
+            var pagePercent = (float)1/TotalPages;
+            // добавляем столько процентов для всех страниц кроме этой (номер страницы в апдейте начинается с 0)
+            float totalProgress = 0;
+            if (CurrentPage > 0) {
+                totalProgress += (float)(pagePercent * CurrentPage);
+            }
+            // добавляем прогресс в этой странице
+            totalProgress += pagePercent * Progress;
+            // возвращаем результат
+            return totalProgress;
+        }
     }
 }

@@ -217,7 +217,7 @@ public class MainViewModel : ViewModelBase
                 fileContents.Split("\n", StringSplitOptions.RemoveEmptyEntries),
                 string.Format(Resources.pdfTitle, Path.GetFileNameWithoutExtension(url)),
                 (update) => {
-                    GenerationProgress = update.Progress * 100;
+                    GenerationProgress = update.TotalProgress() * 100;
                     GenerationStage = update.GetProgressString();
                 },
                 token,
