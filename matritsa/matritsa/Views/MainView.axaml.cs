@@ -74,7 +74,28 @@ public partial class MainView : UserControl {
                 viewModel.MatrixSize == null) {
                 return;
             }
-            viewModel.StartPrintPreview();
+            // создаем окно с параметрами pdf
+            var ownerWindow = this.Parent as MainWindow;
+            var window = new PrintPreviewWindow(
+                new PDFOptions(
+                    new PaperType(
+                        new Dimensions<float>(
+                            viewModel.PageWidth != null ? (float)viewModel.PageWidth : 0F,
+                            viewModel.PageHeight != null ? (float)viewModel.PageHeight : 0F,
+                            MeasurementUnit.Millimeter
+                        ),
+                        10
+                    ),
+                    new Dimensions<float>(
+                        (float)viewModel.MatrixFrameWidth,
+                        (float)viewModel.MatrixFrameHeight,
+                        MeasurementUnit.Millimeter
+                    ),
+                    (float)viewModel.MatrixSize
+                )
+            );
+            // показываем
+            window.ShowDialog(ownerWindow);
         }
     }
 

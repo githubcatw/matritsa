@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using System.Web;
 using System.IO;
 using System.Runtime.InteropServices;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia;
 
 namespace matritsa.ViewModels;
 
@@ -130,7 +133,7 @@ public class MainViewModel : ViewModelBase
     private PDFGenerator generator = new(new PDFOptions(PaperType.A4, new Dimensions<float>(15, 15, MeasurementUnit.Millimeter), 10));
     private CancellationTokenSource? genTaskCancel = null;
 
-    internal void GeneratePreview(CancellationToken token) {
+    internal void GeneratePreview(CancellationToken token, ref MatrixBlock[] blocks) {
         var layout = generator.GeneratePrintPreviewData(
             (update) => {
                 GenerationProgress = update.Progress * 100;
@@ -138,38 +141,7 @@ public class MainViewModel : ViewModelBase
             },
             token
         );
-        //pdf.Save(path);
-        //Utils.OpenUrl(path);
-    }
-
-    internal void StartPrintPreview() {
-        // сгенерируем название временного файла
-        //var filename = "matrigen_preview_" + new Random().Next().ToString() + ".pdf";
-        //var path = Path.Join(Path.GetTempPath(), filename);
-        // создаем источник токена
-        genTaskCancel = new CancellationTokenSource();
-        // записываем параметры
-        generator.SetOptions(new PDFOptions(
-            new PaperType(
-                new Dimensions<float>(
-                    PageWidth != null ? (float)PageWidth : 0F,
-                    PageHeight != null ? (float)PageHeight : 0F,
-                    MeasurementUnit.Millimeter
-                ),
-                10
-            ),
-            new Dimensions<float>(
-                (float)MatrixFrameWidth,
-                (float)MatrixFrameHeight,
-                MeasurementUnit.Millimeter
-            ),
-            (float)MatrixSize
-        ));
-        // создаем токен и фоновую задачу
-        var token = genTaskCancel.Token;
-        var genTask = new Task(() => GeneratePreview(token), token);
-        // запускаем задачу
-        genTask.Start();
+        blocks = layout;
     }
 
     internal void StartGeneration(Uri outPath) {
