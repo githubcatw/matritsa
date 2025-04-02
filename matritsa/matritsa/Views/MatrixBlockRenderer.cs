@@ -12,6 +12,9 @@ namespace matritsa {
         static MatrixBlockRenderer() {
             AffectsRender<MatrixBlockRenderer>(MatrixBlocksProperty);
             AffectsRender<MatrixBlockRenderer>(TargetPageDimensionsProperty);
+            AffectsRender<MatrixBlockRenderer>(BackgroundProperty);
+            AffectsRender<MatrixBlockRenderer>(PageBrushProperty);
+            AffectsRender<MatrixBlockRenderer>(MatrixBrushProperty);
         }
 
         public MatrixBlockRenderer() {
@@ -25,10 +28,28 @@ namespace matritsa {
             AvaloniaProperty.Register<MatrixBlockRenderer, MatrixBlock[]>(nameof(MatrixBlocks));
         public static readonly StyledProperty<Dimensions<float>> TargetPageDimensionsProperty =
             AvaloniaProperty.Register<MatrixBlockRenderer, Dimensions<float>>(nameof(TargetPageDimensions));
+        public static readonly StyledProperty<IBrush> BackgroundProperty =
+            AvaloniaProperty.Register<MatrixBlockRenderer, IBrush>(nameof(Background));
+        public static readonly StyledProperty<IBrush> PageBrushProperty =
+            AvaloniaProperty.Register<MatrixBlockRenderer, IBrush>(nameof(PageBrush));
+        public static readonly StyledProperty<IBrush> MatrixBrushProperty =
+            AvaloniaProperty.Register<MatrixBlockRenderer, IBrush>(nameof(MatrixBrush));
 
         public MatrixBlock[] MatrixBlocks {
             get => GetValue(MatrixBlocksProperty);
             set => SetValue(MatrixBlocksProperty, value);
+        }
+        public IBrush Background {
+            get => GetValue(BackgroundProperty);
+            set => SetValue(BackgroundProperty, value);
+        }
+        public IBrush PageBrush {
+            get => GetValue(PageBrushProperty);
+            set => SetValue(PageBrushProperty, value);
+        }
+        public IBrush MatrixBrush {
+            get => GetValue(MatrixBrushProperty);
+            set => SetValue(MatrixBrushProperty, value);
         }
 
         public Dimensions<float> TargetPageDimensions {
@@ -80,9 +101,14 @@ namespace matritsa {
             Debug.WriteLine($"Ratio = {wRatio}x{hRatio}");
             Debug.WriteLine($"Start = {startX}x{startY}");
             Debug.WriteLine($"Xform = {pageWidthTransformed}x{pageHeightTransformed}");
-            drawingContext.DrawRectangle(Brushes.PapayaWhip, null, new Rect(startX, startY, pageWidthTransformed, pageHeightTransformed));
+
+            if (Background != null) {
+                drawingContext.DrawRectangle(Background, null, Bounds);
+            }
+            drawingContext.DrawRectangle(PageBrush ?? Brushes.White, null, new Rect(startX, startY, pageWidthTransformed, pageHeightTransformed));
+
             foreach (var block in MatrixBlocks) {
-                drawingContext.DrawRectangle(Brushes.Black, null, new Rect(
+                drawingContext.DrawRectangle(MatrixBrush ?? Brushes.Black, null, new Rect(
                     startX + block.rect.X * wRatio,
                     startY + block.rect.Y * hRatio,
                     block.rect.Width * wRatio,
