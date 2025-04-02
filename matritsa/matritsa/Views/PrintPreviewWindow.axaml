@@ -16,5 +16,5 @@
 	</Design.DataContext>
 	<mtrc:MatrixBlockRenderer
 		MatrixBlocks="{Binding Blocks}" TargetPageDimensions="{Binding PageDimens}"
-		HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+		Background="LightGray" VerticalAlignment="Stretch"/>
 </Window>
