@@ -58,6 +58,7 @@ public class MainViewModel : ViewModelBase
         set {
             this.RaiseAndSetIfChanged(ref _ignPgSz, value);
             this.RaisePropertyChanged(nameof(SaveBlockedReason));
+            this.RaisePropertyChanged(nameof(PreviewBlockedReason));
             this.RaisePropertyChanged(nameof(CodesPerPage));
             this.RaisePropertyChanged(nameof(PageWidth));
             this.RaisePropertyChanged(nameof(PageHeight));
@@ -68,6 +69,7 @@ public class MainViewModel : ViewModelBase
         var oldValue = backing;
         this.RaiseAndSetIfChanged(ref backing, newValue);
         this.RaisePropertyChanged(nameof(SaveBlockedReason));
+        this.RaisePropertyChanged(nameof(PreviewBlockedReason));
         this.RaisePropertyChanged(nameof(CodesPerPage));
     }
 
@@ -83,6 +85,14 @@ public class MainViewModel : ViewModelBase
             else if (!_ignPgSz && (_matFH > _pageH || _matFW > _pageW)) return Resources.generateBlockedReasonFrameLarge;
 
             else return null;
+        }
+    }
+
+    public string? PreviewBlockedReason {
+        get {
+            string? sbl = SaveBlockedReason;
+            if (sbl == Resources.generateBlockedReasonList) return null;
+            return sbl;
         }
     }
 
