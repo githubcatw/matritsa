@@ -146,7 +146,11 @@ namespace Matritsa.PDFGenerator {
 #if PDFGEN_DEBUG || PDFGEN_MAIN_DEBUG
                 Debug.WriteLine($"[PG.GenerateOnePerPage] generating code for #{done}");
 #endif
-                var codeData = LayoutEngine.GenerateMatrix(code, 0, 0, palette);
+                var codeData = LayoutEngine.GenerateMatrix(code,
+                    (Options.MatrixFrameSize.ToPoints().Width - Options.MatrixSizeInPoints) / 2,
+                    (Options.MatrixFrameSize.ToPoints().Height - Options.MatrixSizeInPoints) / 2,
+                    palette
+                );
 #if PDFGEN_DEBUG || PDFGEN_MAIN_DEBUG
                 Debug.WriteLine($"[PG.GenerateOnePerPage] generated code for #{done}");
                 Debug.WriteLine(code);
