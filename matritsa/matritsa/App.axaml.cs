@@ -23,8 +23,8 @@ public partial class App : Application
             desktop.MainWindow = new MainWindow
             {
                 DataContext = new MainViewModel(),
-                Width = 560,
-                Height = 470
+                Width = 608,
+                Height = 522
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
