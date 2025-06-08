@@ -31,6 +31,10 @@ public class MainViewModel : ViewModelBase
         get => _ignPgSz ? null : _pageH;
         set => this.RaiseAndSetSaveAffectingIfChanged(ref _pageH, value);
     }
+    public float? PagePadding {
+        get => _ignPgSz ? null : _pageP;
+        set => this.RaiseAndSetSaveAffectingIfChanged(ref _pageP, value);
+    }
     public float? MatrixSize {
         get => _matSz;
         set => this.RaiseAndSetSaveAffectingIfChanged(ref _matSz, value);
@@ -61,6 +65,7 @@ public class MainViewModel : ViewModelBase
             this.RaisePropertyChanged(nameof(PreviewBlockedReason));
             this.RaisePropertyChanged(nameof(CodesPerPage));
             this.RaisePropertyChanged(nameof(PageWidth));
+            this.RaisePropertyChanged(nameof(PagePadding));
             this.RaisePropertyChanged(nameof(PageHeight));
         }
     }
@@ -126,6 +131,7 @@ public class MainViewModel : ViewModelBase
 
     private float? _pageW = 297;
     private float? _pageH = 210;
+    private float? _pageP = 10;
     private float? _matSz = 10;
     private float? _matFW = 15;
     private float? _matFH = 15;
@@ -164,7 +170,10 @@ public class MainViewModel : ViewModelBase
                     PageHeight != null ? (float)PageHeight : 0F,
                     MeasurementUnit.Millimeter
                 ),
-                10
+                new Dimensions1D<float>(
+                    PagePadding != null ? (float)PagePadding : 0F,
+                    MeasurementUnit.Millimeter
+                )
             ),
             new Dimensions<float>(
                 (float)MatrixFrameWidth,

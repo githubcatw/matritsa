@@ -49,6 +49,12 @@ public partial class MainView : UserControl {
         Height.PointerExited += (x, args) => {
             Preview.SetWholeVisibility(false);
         };
+        Padding.PointerEntered += (x, args) => {
+            Preview.SetAroundVisibility(true);
+        };
+        Padding.PointerExited += (x, args) => {
+            Preview.SetAroundVisibility(false);
+        };
         /*
         MatPadding.PointerEntered += (x, args) => {
             Preview.SetBetweenVisibility(true);
@@ -84,7 +90,10 @@ public partial class MainView : UserControl {
                             viewModel.PageHeight != null ? (float)viewModel.PageHeight : 0F,
                             MeasurementUnit.Millimeter
                         ),
-                        10
+                        new Dimensions1D<float>(
+                            viewModel.PagePadding != null ? (float)viewModel.PagePadding : 0F,
+                            MeasurementUnit.Millimeter
+                        )
                     ),
                     new Dimensions<float>(
                         (float)viewModel.MatrixFrameWidth,

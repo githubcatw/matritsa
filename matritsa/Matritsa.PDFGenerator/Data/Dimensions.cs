@@ -26,6 +26,26 @@ namespace Matritsa.PDFGenerator.Data {
         }
     }
 
+    public class Dimensions1D<T> {
+        /// <summary>
+        /// Размер.
+        /// </summary>
+        public T Size;
+        /// <summary>
+        /// Единица измерения.
+        /// </summary>
+        public MeasurementUnit Unit;
+
+        public Dimensions1D(T size, MeasurementUnit unit) {
+            Size = size;
+            Unit = unit;
+        }
+
+        public override string ToString() {
+            return $"{Size} {Unit.ToString().ToLower()}";
+        }
+    }
+
     public enum MeasurementUnit {
         /// <summary>
         /// Не указана.
@@ -78,6 +98,16 @@ namespace Matritsa.PDFGenerator.Data {
             return new Dimensions<float>(
                 PointConversion.ToPoints(dims.Width, dims.Unit),
                 PointConversion.ToPoints(dims.Height, dims.Unit),
+                MeasurementUnit.Point
+            );
+        }
+
+        /// <summary>
+        /// Превращает размер в поинты (1/72 дюйма).
+        /// </summary>
+        public static Dimensions1D<float> ToPoints(this Dimensions1D<float> dims) {
+            return new Dimensions1D<float>(
+                PointConversion.ToPoints(dims.Size, dims.Unit),
                 MeasurementUnit.Point
             );
         }

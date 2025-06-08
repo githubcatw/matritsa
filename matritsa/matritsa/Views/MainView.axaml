@@ -20,7 +20,7 @@
 	</UserControl.Resources>
 	<Grid Margin="5"
 	        ColumnDefinitions="*, *, *, *"
-	        RowDefinitions="*, *, *, *, *, *, *, *, *">
+	        RowDefinitions="*, *, *, *, *, *, *, *, *, *">
 		<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" FontWeight="Bold"
 				   Margin="10" Text="{x:Static lang:Resources.codeList}"/>
 		<TextBlock
@@ -34,7 +34,7 @@
 			Name="PickCSV" Margin="10" Content="{x:Static lang:Resources.codeListBtn}">
 		</Button>
 
-		<mtrc:MiniLayoutPreview Margin="10" Grid.Row="3" Grid.RowSpan="5" Grid.ColumnSpan="2"
+		<mtrc:MiniLayoutPreview Margin="10" Grid.Row="3" Grid.RowSpan="6" Grid.ColumnSpan="2"
 								Name="Preview"></mtrc:MiniLayoutPreview>
 
 		<TextBlock
@@ -69,17 +69,27 @@
 				<TextBlock Foreground="Gray" Text="{x:Static lang:Resources.unitMillimeterShort}" Margin="0 0 5 0" VerticalAlignment="Center"/>
 			</TextBox.InnerRightContent>
 		</TextBox>
+		
+		<TextBox Grid.Row="5" Grid.Column="2" Margin="10" Name="Padding"
+				 IsEnabled="{Binding !IgnorePageSize}" Grid.ColumnSpan="2"
+				 Text="{Binding PagePadding, Mode=TwoWay, Converter={StaticResource floatConverter}}"
+			     Watermark="{x:Static lang:Resources.pagePadding}" ToolTip.Tip="{x:Static lang:Resources.pagePadding}">
+			<TextBox.InnerRightContent>
+				<TextBlock Foreground="Gray" Text="{x:Static lang:Resources.unitMillimeterShort}" Margin="0 0 5 0" VerticalAlignment="Center"/>
+			</TextBox.InnerRightContent>
+		</TextBox>
+		
 		<TextBlock
 			HorizontalAlignment="Stretch" VerticalAlignment="Center"
-			Grid.Row="5" Grid.Column="2" Margin="10"
+			Grid.Row="6" Grid.Column="2" Margin="10"
 			Text="{x:Static lang:Resources.layoutParamsCode}"/>
 		<TextBlock
 			HorizontalAlignment="Right" VerticalAlignment="Center"
 			IsVisible="{Binding !IgnorePageSize}"
-			Grid.Row="5" Grid.Column="3" Foreground="Gray" Margin="0 0 10 0"
+			Grid.Row="6" Grid.Column="3" Foreground="Gray" Margin="0 0 10 0"
 			Text="{Binding CodesPerPage}"/>
 
-		<TextBox Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="2"
+		<TextBox Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2"
 				 Margin="10" Name="MatSize"
 				 Text="{Binding MatrixSize, Mode=TwoWay, Converter={StaticResource floatConverter}}"
 			     Watermark="{x:Static lang:Resources.matrixSize}" ToolTip.Tip="{x:Static lang:Resources.matrixSize}">
@@ -87,14 +97,14 @@
 				<TextBlock Foreground="Gray" Text="{x:Static lang:Resources.unitMillimeterShort}" Margin="0 0 5 0" VerticalAlignment="Center"/>
 			</TextBox.InnerRightContent>
 		</TextBox>
-		<TextBox Grid.Row="7" Grid.Column="2" Margin="10" Name="MatFW"
+		<TextBox Grid.Row="8" Grid.Column="2" Margin="10" Name="MatFW"
 				 Text="{Binding MatrixFrameWidth, Mode=TwoWay, Converter={StaticResource floatConverter}}"
 			     Watermark="{x:Static lang:Resources.matrixFrameWidth}" ToolTip.Tip="{x:Static lang:Resources.matrixFrameWidth}">
 			<TextBox.InnerRightContent>
 				<TextBlock Foreground="Gray" Text="{x:Static lang:Resources.unitMillimeterShort}" Margin="0 0 5 0" VerticalAlignment="Center"/>
 			</TextBox.InnerRightContent>
 		</TextBox>
-		<TextBox Grid.Row="7" Grid.Column="3" Margin="10" Name="MatFH"
+		<TextBox Grid.Row="8" Grid.Column="3" Margin="10" Name="MatFH"
 				 Text="{Binding MatrixFrameHeight, Mode=TwoWay, Converter={StaticResource floatConverter}}"
 			     Watermark="{x:Static lang:Resources.matrixFrameHeight}" ToolTip.Tip="{x:Static lang:Resources.matrixFrameHeight}">
 			<TextBox.InnerRightContent>
@@ -105,13 +115,13 @@
 		<Button
 			HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-			Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="10"
+			Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Margin="10"
 			IsEnabled="{Binding SaveBlockedReason, Converter={x:Static StringConverters.IsNullOrEmpty}}" Name="SaveFile"
 			Content="{x:Static lang:Resources.generateBtn}" ToolTip.Tip="{Binding SaveBlockedReason}" ToolTip.ShowOnDisabled="True"/>
 		<Button
 			HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-			Grid.Row="8" Grid.Column="2" Grid.ColumnSpan="2" Margin="10"
+			Grid.Row="9" Grid.Column="2" Grid.ColumnSpan="2" Margin="10"
 			IsEnabled="{Binding PreviewBlockedReason, Converter={x:Static StringConverters.IsNullOrEmpty}}" Name="PrintPreview"
 			Content="{x:Static lang:Resources.printPreviewBtn}" ToolTip.Tip="{Binding PreviewBlockedReason}" ToolTip.ShowOnDisabled="True"/>
 		

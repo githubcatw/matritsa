@@ -263,4 +263,7 @@
     <value>Not yet available</value>
     <comment>use for unfinished features</comment>
   </data>
+  <data name="pagePadding" xml:space="preserve">
+    <value>Padding</value>
+  </data>
 </root>

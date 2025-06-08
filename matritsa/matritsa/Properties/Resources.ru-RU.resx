@@ -255,4 +255,7 @@
   <data name="generateBlockedReasonUnfinished" xml:space="preserve">
     <value>Еще не доступно</value>
   </data>
+  <data name="pagePadding" xml:space="preserve">
+    <value>Отступ</value>
+  </data>
 </root>

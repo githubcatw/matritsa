@@ -394,6 +394,15 @@ namespace matritsa.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Padding.
+        /// </summary>
+        public static string pagePadding {
+            get {
+                return ResourceManager.GetString("pagePadding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Width.
         /// </summary>
         public static string pageWidth {

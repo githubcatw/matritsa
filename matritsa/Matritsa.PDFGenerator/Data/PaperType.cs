@@ -4,14 +4,14 @@
         /// Размер страницы в миллиметрах.
         /// </summary>
         public Dimensions<float> Size;
-        public float Padding;
+        public Dimensions1D<float> Padding;
         public MeasurementUnit Unit;
 
         public Dimensions<float> GetBoundingBoxSize() {
-            return new Dimensions<float>(Size.Width - 2 * Padding, Size.Height - 2 * Padding, Size.Unit);
+            return new Dimensions<float>(Size.Width - 2 * Padding.Size, Size.Height - 2 * Padding.Size, Size.Unit);
         }
 
-        public PaperType(Dimensions<float> size, float padding) {
+        public PaperType(Dimensions<float> size, Dimensions1D<float> padding) {
             this.Size = size;
             this.Padding = padding;
             this.Unit = size.Unit;
@@ -19,7 +19,7 @@
 
         public PaperType(float width, float height, float padding, MeasurementUnit unit) {
             this.Size = new Dimensions<float>(width, height, unit);
-            this.Padding = padding;
+            this.Padding = new Dimensions1D<float>(padding, unit);
             this.Unit = unit;
         }
 
